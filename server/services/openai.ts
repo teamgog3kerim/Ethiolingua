@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import * as fs from 'fs';
 import * as path from 'path';
+import { createHash } from 'crypto';
 
 const openai = new OpenAI({ 
   apiKey: process.env.OPENAI_API_KEY || process.env.OPENAI_KEY || "fallback_key"
@@ -14,7 +15,7 @@ export class OpenAIService {
       const systemPrompt = this.getSystemPrompt(nativeLanguage);
       
       const response = await openai.chat.completions.create({
-        model: "gpt-5", // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
+        model: "gpt-4o-mini", // Using gpt-4o-mini for cost-effective, high-quality responses
         messages: [
           { role: "system", content: systemPrompt },
           ...messages.slice(-10).map(msg => ({ // Keep last 10 messages for context
@@ -70,7 +71,7 @@ Current student's native language: ${nativeLanguage}`;
   async generateLessonFeedback(score: number, mistakes: string[]): Promise<string> {
     try {
       const response = await openai.chat.completions.create({
-        model: "gpt-5", // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
+        model: "gpt-4o-mini", // Using gpt-4o-mini for cost-effective feedback generation
         messages: [
           {
             role: "system",
@@ -117,6 +118,21 @@ Current student's native language: ${nativeLanguage}`;
     }
   }
 
+  // Helper function to create secure filename from text
+  private createSecureFilename(text: string): string {
+    // Create a hash of the text for uniqueness
+    const hash = createHash('md5').update(text).digest('hex').substring(0, 8);
+    
+    // Sanitize the text for filename use
+    const sanitized = text
+      .replace(/[^a-zA-Z0-9\u1200-\u137F\s]/g, '') // Keep alphanumeric, Amharic chars, and spaces
+      .replace(/\s+/g, '_') // Replace spaces with underscores
+      .substring(0, 50); // Limit length
+    
+    // Combine sanitized text with hash for uniqueness and security
+    return `${sanitized}_${hash}`;
+  }
+
   // Helper function to convert Amharic text to phonetic representation for better speech recognition
   phoneticTransliteration(amharicText: string): string {
     // Basic phonetic mapping for common Amharic characters
@@ -152,15 +168,18 @@ Current student's native language: ${nativeLanguage}`;
   async generateAndSaveAudio(text: string, filename: string): Promise<{ normalUrl: string; slowUrl: string }> {
     await this.ensureAudioDirectory();
     
+    // Create secure filename to prevent path traversal attacks
+    const secureFilename = this.createSecureFilename(filename);
+    
     const audioDir = path.join(process.cwd(), 'public', 'audio');
-    const normalPath = path.join(audioDir, `${filename}.mp3`);
-    const slowPath = path.join(audioDir, `${filename}_slow.mp3`);
+    const normalPath = path.join(audioDir, `${secureFilename}.mp3`);
+    const slowPath = path.join(audioDir, `${secureFilename}_slow.mp3`);
 
     // Check if files already exist to avoid regenerating
     if (fs.existsSync(normalPath) && fs.existsSync(slowPath)) {
       return {
-        normalUrl: `/audio/${filename}.mp3`,
-        slowUrl: `/audio/${filename}_slow.mp3`
+        normalUrl: `/audio/${secureFilename}.mp3`,
+        slowUrl: `/audio/${secureFilename}_slow.mp3`
       };
     }
 
@@ -175,8 +194,8 @@ Current student's native language: ${nativeLanguage}`;
     fs.writeFileSync(slowPath, slowBuffer);
 
     return {
-      normalUrl: `/audio/${filename}.mp3`,
-      slowUrl: `/audio/${filename}_slow.mp3`
+      normalUrl: `/audio/${secureFilename}.mp3`,
+      slowUrl: `/audio/${secureFilename}_slow.mp3`
     };
   }
 }

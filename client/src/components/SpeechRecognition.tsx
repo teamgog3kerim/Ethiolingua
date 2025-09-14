@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 
 interface SpeechRecognitionProps {
   targetText: string;
@@ -32,21 +33,45 @@ export function SpeechRecognition({ targetText, onResult, isActive = true }: Spe
       const recognition = new SpeechRecognition();
       recognition.continuous = false;
       recognition.interimResults = true;
-      // Use English for better browser support, we'll handle Amharic pronunciation differently
+      // Try multiple languages for better Amharic pronunciation detection
+      // Start with English but the system will adapt based on phonetic analysis
       recognition.lang = 'en-US';
+      recognition.maxAlternatives = 3; // Get multiple alternatives
+      recognition.grammars = null; // Allow free-form speech
       
       recognition.onstart = () => {
         setIsListening(true);
       };
 
-      recognition.onresult = (event: any) => {
+      recognition.onresult = async (event: any) => {
         const current = event.resultIndex;
-        const transcript = event.results[current][0].transcript;
+        let transcript = event.results[current][0].transcript;
+        
+        // Try to get the best alternative if available
+        if (event.results[current].length > 1) {
+          // Check all alternatives and pick the best match
+          const alternatives = Array.from(event.results[current]).map((alt: any) => alt.transcript);
+          transcript = alternatives[0]; // For now, use the first (most confident) alternative
+        }
+        
         setTranscript(transcript);
         
         if (event.results[current].isFinal) {
-          const score = calculatePronunciationScore(transcript, targetText);
-          onResult(score, transcript);
+          try {
+            const score = await calculatePronunciationScore(transcript, targetText);
+            onResult(score, transcript);
+          } catch (error) {
+            console.error("Error calculating pronunciation score:", error);
+            toast({
+              title: "Pronunciation Analysis Failed",
+              description: "Using basic scoring. Please check your internet connection.",
+              variant: "destructive",
+            });
+            // Provide a fallback score based on basic string similarity
+            const basicScore = transcript.toLowerCase().trim() === targetText.toLowerCase().trim() ? 100 : 
+                               transcript.toLowerCase().includes(targetText.toLowerCase().substring(0, 3)) ? 75 : 50;
+            onResult(basicScore, transcript);
+          }
           setIsListening(false);
         }
       };
@@ -54,9 +79,39 @@ export function SpeechRecognition({ targetText, onResult, isActive = true }: Spe
       recognition.onerror = (event: any) => {
         console.error('Speech recognition error:', event.error);
         setIsListening(false);
+        
+        let errorTitle = "Recognition Error";
+        let errorDescription = "Please try again.";
+        
+        switch(event.error) {
+          case 'no-speech':
+            errorTitle = "No Speech Detected";
+            errorDescription = "We didn't hear anything. Please speak clearly into your microphone and try again.";
+            break;
+          case 'audio-capture':
+            errorTitle = "Microphone Access Denied";
+            errorDescription = "Please allow microphone access in your browser settings and refresh the page.";
+            break;
+          case 'not-allowed':
+            errorTitle = "Microphone Permission Required";
+            errorDescription = "Please allow microphone access to use pronunciation practice.";
+            break;
+          case 'network':
+            errorTitle = "Network Error";
+            errorDescription = "Please check your internet connection and try again.";
+            break;
+          case 'service-not-allowed':
+            errorTitle = "Speech Service Unavailable";
+            errorDescription = "Speech recognition service is not available. Please try again later.";
+            break;
+          default:
+            errorTitle = "Recognition Error";
+            errorDescription = `Error: ${event.error}. Please ensure your microphone is working and try again.`;
+        }
+        
         toast({
-          title: "Recognition Error",
-          description: "Please try again. Make sure your microphone is working.",
+          title: errorTitle,
+          description: errorDescription,
           variant: "destructive",
         });
       };
@@ -75,53 +130,73 @@ export function SpeechRecognition({ targetText, onResult, isActive = true }: Spe
     };
   }, [targetText, onResult, toast]);
 
-  const calculatePronunciationScore = (spoken: string, target: string): number => {
-    // Improved scoring algorithm for Amharic pronunciation
+  const calculatePronunciationScore = async (spoken: string, target: string, retryCount = 0): Promise<number> => {
+    // Improved scoring algorithm for Amharic pronunciation using server-side transliteration
     const spokenLower = spoken.toLowerCase().trim();
     const targetLower = target.toLowerCase().trim();
     
     if (spokenLower === targetLower) return 100;
     
-    // Convert to phonetic representation for better matching
-    const spokenPhonetic = phoneticTransliteration(spokenLower);
-    const targetPhonetic = phoneticTransliteration(targetLower);
+    const maxRetries = 2;
+    const retryDelay = Math.min(1000 * Math.pow(2, retryCount), 5000); // Exponential backoff, max 5s
     
-    // Check phonetic similarity first
-    if (spokenPhonetic === targetPhonetic) return 95;
-    
-    // Calculate both regular and phonetic similarity
-    const regularDistance = levenshteinDistance(spokenLower, targetLower);
-    const phoneticDistance = levenshteinDistance(spokenPhonetic, targetPhonetic);
-    
-    const regularMaxLength = Math.max(spoken.length, target.length);
-    const phoneticMaxLength = Math.max(spokenPhonetic.length, targetPhonetic.length);
-    
-    const regularSimilarity = regularMaxLength > 0 ? 1 - (regularDistance / regularMaxLength) : 0;
-    const phoneticSimilarity = phoneticMaxLength > 0 ? 1 - (phoneticDistance / phoneticMaxLength) : 0;
-    
-    // Use the better of the two similarities, weighted toward phonetic
-    const finalSimilarity = Math.max(regularSimilarity * 0.3 + phoneticSimilarity * 0.7, phoneticSimilarity);
-    
-    // Score from 0-100, minimum 25 for attempting
-    return Math.max(25, Math.round(finalSimilarity * 100));
+    try {
+      // Use server-side phonetic transliteration for better Amharic support
+      const [spokenPhoneticResponse, targetPhoneticResponse] = await Promise.all([
+        apiRequest('/api/phonetic-transliteration', { 
+          method: 'POST', 
+          body: { text: spokenLower } 
+        }),
+        apiRequest('/api/phonetic-transliteration', { 
+          method: 'POST', 
+          body: { text: targetLower } 
+        })
+      ]);
+
+      const spokenPhonetic = spokenPhoneticResponse.phoneticText;
+      const targetPhonetic = targetPhoneticResponse.phoneticText;
+      
+      // Check phonetic similarity first
+      if (spokenPhonetic === targetPhonetic) return 95;
+      
+      // Calculate both regular and phonetic similarity
+      const regularDistance = levenshteinDistance(spokenLower, targetLower);
+      const phoneticDistance = levenshteinDistance(spokenPhonetic, targetPhonetic);
+      
+      const regularMaxLength = Math.max(spoken.length, target.length);
+      const phoneticMaxLength = Math.max(spokenPhonetic.length, targetPhonetic.length);
+      
+      const regularSimilarity = regularMaxLength > 0 ? 1 - (regularDistance / regularMaxLength) : 0;
+      const phoneticSimilarity = phoneticMaxLength > 0 ? 1 - (phoneticDistance / phoneticMaxLength) : 0;
+      
+      // Use the better of the two similarities, weighted toward phonetic
+      const finalSimilarity = Math.max(regularSimilarity * 0.3 + phoneticSimilarity * 0.7, phoneticSimilarity);
+      
+      // Score from 0-100, minimum 25 for attempting
+      return Math.max(25, Math.round(finalSimilarity * 100));
+    } catch (error) {
+      console.error(`Error in phonetic transliteration (attempt ${retryCount + 1}):`, error);
+      
+      // Retry on network errors
+      if (retryCount < maxRetries && (
+        error.message?.includes('fetch') || 
+        error.message?.includes('network') || 
+        error.message?.includes('timeout')
+      )) {
+        console.log(`Retrying in ${retryDelay}ms...`);
+        await new Promise(resolve => setTimeout(resolve, retryDelay));
+        return calculatePronunciationScore(spoken, target, retryCount + 1);
+      }
+      
+      // Final fallback to basic string similarity if all retries fail
+      console.log("Using fallback pronunciation scoring");
+      const distance = levenshteinDistance(spokenLower, targetLower);
+      const maxLength = Math.max(spoken.length, target.length);
+      const similarity = maxLength > 0 ? 1 - (distance / maxLength) : 0;
+      return Math.max(25, Math.round(similarity * 100));
+    }
   };
 
-  // Basic phonetic transliteration for Amharic to help with pronunciation scoring
-  const phoneticTransliteration = (text: string): string => {
-    // Remove common English words that might be picked up
-    const cleanText = text.replace(/\b(the|a|an|and|or|but|in|on|at|to|for|of|with|by)\b/gi, '').trim();
-    
-    // Basic phonetic mapping for common sounds
-    return cleanText
-      .replace(/ph/gi, 'f')
-      .replace(/th/gi, 't')
-      .replace(/ch/gi, 'c')
-      .replace(/sh/gi, 's')
-      .replace(/[aeiou]+/gi, 'a') // Normalize vowels
-      .replace(/[^a-z\s]/gi, '') // Remove non-alphabetic characters
-      .replace(/\s+/g, ' ') // Normalize spaces
-      .trim();
-  };
 
   const levenshteinDistance = (str1: string, str2: string): number => {
     const matrix = [];

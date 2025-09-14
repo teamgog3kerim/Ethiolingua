@@ -344,6 +344,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Phonetic transliteration for better pronunciation scoring
+  app.post('/api/phonetic-transliteration', isAuthenticated, async (req: any, res) => {
+    try {
+      const { text } = req.body;
+      
+      if (!text || typeof text !== 'string') {
+        return res.status(400).json({ error: "Text is required and must be a string" });
+      }
+
+      const phoneticText = openaiService.phoneticTransliteration(text);
+      
+      res.json({ 
+        originalText: text,
+        phoneticText: phoneticText 
+      });
+    } catch (error) {
+      console.error("Error in phonetic transliteration:", error);
+      res.status(500).json({ error: "Failed to generate phonetic transliteration" });
+    }
+  });
+
   // Live tutor booking routes
   app.get('/api/tutors', isAuthenticated, async (req: any, res) => {
     try {
