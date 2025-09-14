@@ -3,18 +3,8 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { z } from "zod";
-import Stripe from "stripe";
 import { OpenAIService } from "./services/openai";
 
-// Initialize Stripe only if API key is available
-const isStripeEnabled = !!process.env.STRIPE_SECRET_KEY;
-const stripe = isStripeEnabled ? new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2023-10-16",
-}) : null;
-
-if (!isStripeEnabled) {
-  console.warn('Stripe API key not found. Subscription features will be disabled.');
-}
 
 const openaiService = new OpenAIService();
 
@@ -229,94 +219,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Subscription management
-  app.post('/api/get-or-create-subscription', isAuthenticated, async (req: any, res) => {
-    try {
-      if (!isStripeEnabled || !stripe) {
-        return res.status(503).json({ 
-          error: { message: "Payment processing is temporarily unavailable. Please try again later." }
-        });
-      }
-
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-
-      if (user?.stripeSubscriptionId) {
-        const subscription = await stripe.subscriptions.retrieve(user.stripeSubscriptionId);
-        const invoice = await stripe.invoices.retrieve(subscription.latest_invoice as string, {
-          expand: ['payment_intent']
-        });
-
-        res.json({
-          subscriptionId: subscription.id,
-          clientSecret: (invoice.payment_intent as any)?.client_secret,
-        });
-        return;
-      }
-
-      if (!user?.email) {
-        throw new Error('No user email on file');
-      }
-
-      const customer = await stripe.customers.create({
-        email: user.email,
-        name: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
-      });
-
-      const subscription = await stripe.subscriptions.create({
-        customer: customer.id,
-        items: [{
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: 'Learn Amharic Pro Subscription',
-            },
-            unit_amount: 3000, // $30 USD equivalent
-            recurring: {
-              interval: 'month',
-            },
-          },
-        }],
-        payment_behavior: 'default_incomplete',
-        expand: ['latest_invoice.payment_intent'],
-      });
-
-      await storage.updateUserStripeInfo(userId, customer.id, subscription.id);
-
-      res.json({
-        subscriptionId: subscription.id,
-        clientSecret: (subscription.latest_invoice as any)?.payment_intent?.client_secret,
-      });
-    } catch (error: any) {
-      console.error("Subscription error:", error);
-      res.status(400).json({ error: { message: error.message } });
-    }
-  });
-
-  // Webhook to handle subscription updates
-  app.post('/api/webhooks/stripe', async (req, res) => {
-    try {
-      if (!isStripeEnabled || !stripe) {
-        return res.status(503).json({ error: "Payment processing is not configured" });
-      }
-
-      const event = req.body;
-
-      if (event.type === 'invoice.payment_succeeded') {
-        const subscription = await stripe.subscriptions.retrieve(event.data.object.subscription);
-        const customer = await stripe.customers.retrieve(subscription.customer as string);
-        
-        // Update user subscription status
-        // Note: This is simplified - in production you'd want to find user by customer ID
-        // For now, we'll handle this via the frontend after successful payment
-      }
-
-      res.json({ received: true });
-    } catch (error) {
-      console.error("Webhook error:", error);
-      res.status(400).send('Webhook Error');
-    }
-  });
 
   // Audio generation route (authenticated users for testing)
   app.post('/api/generate-lesson-audio', isAuthenticated, async (req: any, res) => {

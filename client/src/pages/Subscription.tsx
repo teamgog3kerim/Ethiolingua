@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,65 +8,9 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 
-// Load Stripe
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY || '');
 
-const SubscriptionForm = ({ clientSecret }: { clientSecret: string }) => {
-  const stripe = useStripe();
-  const elements = useElements();
-  const { toast } = useToast();
-  const [isProcessing, setIsProcessing] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!stripe || !elements) {
-      return;
-    }
-
-    setIsProcessing(true);
-
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: `${window.location.origin}/?subscription=success`,
-      },
-    });
-
-    if (error) {
-      toast({
-        title: "Payment Failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    } else {
-      toast({
-        title: "Payment Successful",
-        description: "Welcome to Pro! You now have unlimited access.",
-      });
-    }
-
-    setIsProcessing(false);
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <PaymentElement />
-      <Button 
-        type="submit" 
-        disabled={!stripe || isProcessing}
-        className="w-full bg-gradient-to-r from-primary to-accent text-white font-bold py-4 px-8 rounded-2xl"
-        data-testid="button-subscribe"
-      >
-        {isProcessing ? "Processing..." : "Subscribe Now"}
-      </Button>
-    </form>
-  );
-};
 
 export default function Subscription() {
-  const [showPayment, setShowPayment] = useState(false);
-  const [clientSecret, setClientSecret] = useState("");
   const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null);
   const { user } = useAuth();
   const { toast } = useToast();
@@ -78,28 +20,13 @@ export default function Subscription() {
     retry: false,
   });
 
-  const subscriptionMutation = useMutation({
-    mutationFn: async () => {
-      const response = await apiRequest("POST", "/api/get-or-create-subscription");
-      return response.json();
-    },
-    onSuccess: (data) => {
-      if (data.clientSecret) {
-        setClientSecret(data.clientSecret);
-        setShowPayment(true);
-      }
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: "Failed to initiate subscription. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
 
   const handleUpgrade = () => {
-    subscriptionMutation.mutate();
+    // Show instructions for Binance Pay
+    toast({
+      title: "Pay with Binance",
+      description: "Use the QR code above to complete payment via Binance Pay. Payment ID: User-464cd",
+    });
   };
 
   const toggleFAQ = (index: number) => {
@@ -121,44 +48,6 @@ export default function Subscription() {
     }
   ];
 
-  if (showPayment && clientSecret) {
-    return (
-      <div className="min-h-screen bg-background">
-        <header className="bg-card shadow-sm border-b border-border">
-          <div className="max-w-4xl mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={() => setShowPayment(false)}
-                className="w-10 h-10 bg-muted rounded-xl"
-              >
-                <i className="fas fa-arrow-left text-muted-foreground"></i>
-              </Button>
-              <h1 className="text-lg font-bold text-foreground">Complete Payment</h1>
-              <div className="w-10"></div>
-            </div>
-          </div>
-        </header>
-
-        <main className="max-w-md mx-auto px-4 py-8">
-          <Card className="p-6">
-            <div className="text-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-secondary to-accent rounded-full flex items-center justify-center mx-auto mb-4">
-                <i className="fas fa-crown text-white text-2xl"></i>
-              </div>
-              <h2 className="text-xl font-bold text-foreground mb-2">Upgrade to Pro</h2>
-              <p className="text-muted-foreground">$30 USD per month</p>
-            </div>
-
-            <Elements stripe={stripePromise} options={{ clientSecret }}>
-              <SubscriptionForm clientSecret={clientSecret} />
-            </Elements>
-          </Card>
-        </main>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -207,16 +96,16 @@ export default function Subscription() {
         </div>
 
         {/* Payment Options */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-8">
-          {/* Binance Pay Option (Primary) */}
-          <Card className="bg-gradient-to-br from-yellow-500 to-orange-500 rounded-3xl p-8 text-center text-white relative overflow-hidden border-2 border-yellow-400">
+        <div className="flex justify-center max-w-2xl mx-auto mb-8">
+          {/* Binance Pay Option (Only) */}
+          <Card className="bg-gradient-to-br from-yellow-500 to-orange-500 rounded-3xl p-8 text-center text-white relative overflow-hidden border-2 border-yellow-400 w-full max-w-lg">
             {/* Background pattern */}
             <div className="absolute inset-0 opacity-10 pattern-bg" />
             
             <div className="relative z-10">
               <div className="flex items-center justify-center gap-2 mb-4">
                 <i className="fas fa-star text-yellow-200"></i>
-                <span className="text-sm font-medium">RECOMMENDED</span>
+                <span className="text-sm font-medium">SECURE PAYMENT</span>
                 <i className="fas fa-star text-yellow-200"></i>
               </div>
               
@@ -241,6 +130,7 @@ export default function Subscription() {
               </div>
               
               <Button 
+                onClick={handleUpgrade}
                 className="w-full bg-white text-orange-500 font-bold py-4 px-6 rounded-2xl hover:bg-gray-100 transition-colors shadow-lg"
                 data-testid="button-binance-pay"
               >
@@ -248,50 +138,6 @@ export default function Subscription() {
               </Button>
               
               <p className="text-xs opacity-75 mt-3">Instant payment • Low fees • Secure</p>
-            </div>
-          </Card>
-
-          {/* Stripe Option (Alternative) */}
-          <Card className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-3xl p-8 text-center text-white relative overflow-hidden">
-            {/* Background pattern */}
-            <div className="absolute inset-0 opacity-10 pattern-bg" />
-            
-            <div className="relative z-10">
-              <div className="flex items-center justify-center gap-2 mb-4">
-                <i className="fas fa-credit-card text-blue-200"></i>
-                <span className="text-sm font-medium">Traditional Payment</span>
-                <i className="fas fa-credit-card text-blue-200"></i>
-              </div>
-              
-              <h3 className="text-2xl font-bold mb-2">Credit Card</h3>
-              <div className="mb-6">
-                <div className="text-4xl font-bold">$30 <span className="text-lg font-medium">USD</span></div>
-                <p className="text-sm opacity-90">per month via Stripe</p>
-              </div>
-              
-              {/* Credit Card Icons */}
-              <div className="flex items-center justify-center gap-2 mb-6">
-                <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
-                  <i className="fab fa-cc-visa text-white text-sm"></i>
-                </div>
-                <div className="w-8 h-8 bg-red-600 rounded flex items-center justify-center">
-                  <i className="fab fa-cc-mastercard text-white text-sm"></i>
-                </div>
-                <div className="w-8 h-8 bg-blue-500 rounded flex items-center justify-center">
-                  <i className="fab fa-cc-amex text-white text-sm"></i>
-                </div>
-              </div>
-              
-              <Button 
-                onClick={handleUpgrade}
-                disabled={subscriptionMutation.isPending}
-                className="w-full bg-white text-blue-600 font-bold py-4 px-6 rounded-2xl hover:bg-gray-100 transition-colors shadow-lg"
-                data-testid="button-start-subscription"
-              >
-                {subscriptionMutation.isPending ? "Setting up..." : "Pay with Card"}
-              </Button>
-              
-              <p className="text-xs opacity-75 mt-3">Cancel anytime • Secure payments</p>
             </div>
           </Card>
         </div>
@@ -385,20 +231,20 @@ export default function Subscription() {
 
         {/* Payment Methods */}
         <Card className="bg-muted/50 rounded-2xl p-6 mb-8">
-          <h3 className="font-bold text-foreground mb-4 text-center">Secure Payment via Stripe</h3>
+          <h3 className="font-bold text-foreground mb-4 text-center">Secure Cryptocurrency Payment</h3>
           <div className="flex items-center justify-center gap-4 mb-4">
-            <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
-              <i className="fab fa-cc-visa text-white text-xl"></i>
+            <div className="w-12 h-12 bg-yellow-600 rounded-xl flex items-center justify-center">
+              <i className="fab fa-bitcoin text-white text-xl"></i>
             </div>
-            <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center">
-              <i className="fab fa-cc-mastercard text-white text-xl"></i>
+            <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center">
+              <span className="text-white font-bold text-xs">BNB</span>
             </div>
-            <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center">
-              <i className="fab fa-cc-amex text-white text-xl"></i>
+            <div className="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center">
+              <span className="text-white font-bold text-xs">USDT</span>
             </div>
             <div className="text-muted-foreground">+ more</div>
           </div>
-          <p className="text-sm text-center text-muted-foreground">Fast, secure, and reliable payments</p>
+          <p className="text-sm text-center text-muted-foreground">Fast, secure, and low-fee crypto payments via Binance Pay</p>
         </Card>
 
         {/* FAQs */}
@@ -429,14 +275,13 @@ export default function Subscription() {
         <div className="text-center">
           <Button 
             onClick={handleUpgrade}
-            disabled={subscriptionMutation.isPending}
             className="bg-gradient-to-r from-primary to-accent text-white font-bold py-4 px-8 rounded-2xl hover:shadow-lg transition-all duration-300 transform hover:scale-[1.02]"
             data-testid="button-upgrade-now"
           >
             <i className="fas fa-crown mr-2"></i>
-            {subscriptionMutation.isPending ? "Setting up..." : "Upgrade to Pro Now"}
+            Upgrade to Pro Now
           </Button>
-          <p className="text-sm text-muted-foreground mt-3">$30 USD/month • Cancel anytime • Instant access</p>
+          <p className="text-sm text-muted-foreground mt-3">30 USDT/month • Pay with crypto • Instant access</p>
         </div>
       </main>
     </div>
