@@ -206,32 +206,89 @@ export default function Subscription() {
           </Card>
         </div>
 
-        {/* Pricing Card */}
-        <div className="max-w-md mx-auto mb-8">
-          <Card className="bg-gradient-to-br from-primary to-accent rounded-3xl p-8 text-center text-white relative overflow-hidden">
+        {/* Payment Options */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-8">
+          {/* Binance Pay Option (Primary) */}
+          <Card className="bg-gradient-to-br from-yellow-500 to-orange-500 rounded-3xl p-8 text-center text-white relative overflow-hidden border-2 border-yellow-400">
             {/* Background pattern */}
             <div className="absolute inset-0 opacity-10 pattern-bg" />
             
             <div className="relative z-10">
               <div className="flex items-center justify-center gap-2 mb-4">
-                <i className="fas fa-star text-secondary"></i>
-                <span className="text-sm font-medium">Most Popular</span>
-                <i className="fas fa-star text-secondary"></i>
+                <i className="fas fa-star text-yellow-200"></i>
+                <span className="text-sm font-medium">RECOMMENDED</span>
+                <i className="fas fa-star text-yellow-200"></i>
               </div>
               
-              <h3 className="text-2xl font-bold mb-2">Pro Subscription</h3>
+              <h3 className="text-2xl font-bold mb-2">Binance Pay</h3>
+              <div className="mb-6">
+                <div className="text-4xl font-bold">30 <span className="text-lg font-medium">USDT</span></div>
+                <p className="text-sm opacity-90">per month via cryptocurrency</p>
+              </div>
+              
+              {/* QR Code */}
+              <div className="bg-white rounded-2xl p-4 mb-4">
+                <img 
+                  src="/attached_assets/binance-1757796747327 (2)_1757853481242.png" 
+                  alt="Binance Pay QR Code" 
+                  className="w-48 h-48 mx-auto object-contain"
+                />
+              </div>
+              
+              <div className="text-center mb-4">
+                <p className="text-sm opacity-90 mb-2">Scan with Binance App to pay</p>
+                <p className="text-xs opacity-75">User ID: User-464cd</p>
+              </div>
+              
+              <Button 
+                className="w-full bg-white text-orange-500 font-bold py-4 px-6 rounded-2xl hover:bg-gray-100 transition-colors shadow-lg"
+                data-testid="button-binance-pay"
+              >
+                Pay with Binance (30 USDT)
+              </Button>
+              
+              <p className="text-xs opacity-75 mt-3">Instant payment • Low fees • Secure</p>
+            </div>
+          </Card>
+
+          {/* Stripe Option (Alternative) */}
+          <Card className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-3xl p-8 text-center text-white relative overflow-hidden">
+            {/* Background pattern */}
+            <div className="absolute inset-0 opacity-10 pattern-bg" />
+            
+            <div className="relative z-10">
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <i className="fas fa-credit-card text-blue-200"></i>
+                <span className="text-sm font-medium">Traditional Payment</span>
+                <i className="fas fa-credit-card text-blue-200"></i>
+              </div>
+              
+              <h3 className="text-2xl font-bold mb-2">Credit Card</h3>
               <div className="mb-6">
                 <div className="text-4xl font-bold">$30 <span className="text-lg font-medium">USD</span></div>
                 <p className="text-sm opacity-90">per month via Stripe</p>
               </div>
               
+              {/* Credit Card Icons */}
+              <div className="flex items-center justify-center gap-2 mb-6">
+                <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
+                  <i className="fab fa-cc-visa text-white text-sm"></i>
+                </div>
+                <div className="w-8 h-8 bg-red-600 rounded flex items-center justify-center">
+                  <i className="fab fa-cc-mastercard text-white text-sm"></i>
+                </div>
+                <div className="w-8 h-8 bg-blue-500 rounded flex items-center justify-center">
+                  <i className="fab fa-cc-amex text-white text-sm"></i>
+                </div>
+              </div>
+              
               <Button 
                 onClick={handleUpgrade}
                 disabled={subscriptionMutation.isPending}
-                className="w-full bg-white text-primary font-bold py-4 px-6 rounded-2xl hover:bg-white/90 transition-colors shadow-lg"
+                className="w-full bg-white text-blue-600 font-bold py-4 px-6 rounded-2xl hover:bg-gray-100 transition-colors shadow-lg"
                 data-testid="button-start-subscription"
               >
-                {subscriptionMutation.isPending ? "Setting up..." : "Subscribe with Stripe"}
+                {subscriptionMutation.isPending ? "Setting up..." : "Pay with Card"}
               </Button>
               
               <p className="text-xs opacity-75 mt-3">Cancel anytime • Secure payments</p>
