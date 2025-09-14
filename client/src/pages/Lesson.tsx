@@ -138,17 +138,19 @@ export default function Lesson() {
         
         {/* Practice Section */}
         <Card className="bg-accent/5 border border-accent/20 rounded-3xl p-6 mb-8">
-          <h3 className="font-bold text-foreground mb-4 text-center">Try pronouncing it!</h3>
+          <h3 className="font-bold text-foreground mb-4 text-center">Practice Pronunciation</h3>
           <div className="text-center">
-            <Button 
-              size="lg"
-              className="w-20 h-20 bg-accent rounded-full flex items-center justify-center hover:bg-accent/90 transition-colors shadow-lg mb-4"
-              data-testid="button-record-pronunciation"
-            >
-              <i className="fas fa-microphone text-accent-foreground text-2xl"></i>
-            </Button>
-            <p className="text-sm text-muted-foreground">Tap to record your pronunciation</p>
-            <p className="text-xs text-accent font-medium mt-2">Pro feature - Available in full version</p>
+            <Link href={`/pronunciation/${lesson.id}`}>
+              <Button 
+                size="lg"
+                className="w-20 h-20 bg-accent rounded-full flex items-center justify-center hover:bg-accent/90 transition-colors shadow-lg mb-4"
+                data-testid="button-practice-pronunciation"
+              >
+                <i className="fas fa-microphone text-accent-foreground text-2xl"></i>
+              </Button>
+            </Link>
+            <p className="text-sm text-muted-foreground">Practice your Amharic pronunciation</p>
+            <p className="text-xs text-accent font-medium mt-2">AI-powered speech recognition</p>
           </div>
         </Card>
         

@@ -393,6 +393,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Pronunciation practice results
+  app.post('/api/pronunciation-practice', isAuthenticated, async (req: any, res) => {
+    try {
+      // Validate input
+      const practiceSchema = z.object({
+        lessonId: z.number().int().positive(),
+        scores: z.array(z.number().min(0).max(100)),
+        averageScore: z.number().min(0).max(100),
+      });
+
+      const { lessonId, scores, averageScore } = practiceSchema.parse(req.body);
+      const userId = req.user.claims.sub;
+
+      // Check if lesson exists
+      const lesson = await storage.getLesson(lessonId);
+      if (!lesson) {
+        return res.status(404).json({ error: "Lesson not found" });
+      }
+
+      // Save pronunciation practice results WITHOUT marking lesson as completed
+      // This is separate from lesson completion - it's just practice data
+      const practiceData = {
+        userId,
+        lessonId,
+        completed: false, // Don't mark lesson as completed for pronunciation practice
+        score: averageScore,
+        timeSpent: 300, // 5 minutes default for pronunciation practice
+        metadata: { 
+          pronunciationScores: scores,
+          practiceType: 'pronunciation',
+          practiceDate: new Date().toISOString()
+        },
+      };
+
+      await storage.createOrUpdateProgress(practiceData);
+
+      res.json({ success: true, averageScore, practiceDate: new Date().toISOString() });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ 
+          error: "Invalid input data", 
+          details: error.errors 
+        });
+      }
+      console.error("Error saving pronunciation practice:", error);
+      res.status(500).json({ error: "Failed to save practice results" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
