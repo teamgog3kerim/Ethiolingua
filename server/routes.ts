@@ -318,7 +318,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Audio generation route
+  // Audio generation route (authenticated users for testing)
   app.post('/api/generate-lesson-audio', isAuthenticated, async (req: any, res) => {
     try {
       const { lessonId } = req.body;
@@ -360,7 +360,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Bulk generate audio for all lessons
+  // Bulk generate audio for all lessons (authenticated users for testing)
   app.post('/api/generate-all-audio', isAuthenticated, async (req: any, res) => {
     try {
       const lessons = await storage.getLessons();
