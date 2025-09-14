@@ -117,12 +117,13 @@ export default function Progress() {
         title: "Copied to clipboard!",
         description: "Share text copied. You can now paste it on your favorite social platform.",
         action: (
-          <div className="flex gap-2 mt-2">
+          <div className="flex flex-wrap gap-2 mt-2">
             <Button 
               size="sm" 
               variant="outline" 
               onClick={() => window.open(shareUrls.twitter, '_blank')}
               className="flex items-center gap-1"
+              data-testid="button-share-twitter"
             >
               <Twitter className="h-3 w-3" />
               Twitter
@@ -132,19 +133,83 @@ export default function Progress() {
               variant="outline" 
               onClick={() => window.open(shareUrls.facebook, '_blank')}
               className="flex items-center gap-1"
+              data-testid="button-share-facebook"
             >
               <Facebook className="h-3 w-3" />
               Facebook
+            </Button>
+            <Button 
+              size="sm" 
+              variant="outline" 
+              onClick={() => window.open(shareUrls.linkedin, '_blank')}
+              className="flex items-center gap-1"
+              data-testid="button-share-linkedin"
+            >
+              <Linkedin className="h-3 w-3" />
+              LinkedIn
+            </Button>
+            <Button 
+              size="sm" 
+              variant="outline" 
+              onClick={() => window.open(shareUrls.whatsapp, '_blank')}
+              className="flex items-center gap-1"
+              data-testid="button-share-whatsapp"
+            >
+              <MessageCircle className="h-3 w-3" />
+              WhatsApp
             </Button>
           </div>
         ),
       });
     }).catch(() => {
-      // Fallback: Just open Twitter share
-      window.open(shareUrls.twitter, '_blank');
+      // Fallback: Show all sharing options instead of just opening Twitter
       toast({
         title: "Share your progress!",
-        description: "A new tab opened with your sharing message.",
+        description: "Choose your preferred platform to share your Amharic learning journey:",
+        action: (
+          <div className="flex flex-wrap gap-2 mt-2">
+            <Button 
+              size="sm" 
+              variant="outline" 
+              onClick={() => window.open(shareUrls.twitter, '_blank')}
+              className="flex items-center gap-1"
+              data-testid="button-share-twitter-fallback"
+            >
+              <Twitter className="h-3 w-3" />
+              Twitter
+            </Button>
+            <Button 
+              size="sm" 
+              variant="outline" 
+              onClick={() => window.open(shareUrls.facebook, '_blank')}
+              className="flex items-center gap-1"
+              data-testid="button-share-facebook-fallback"
+            >
+              <Facebook className="h-3 w-3" />
+              Facebook
+            </Button>
+            <Button 
+              size="sm" 
+              variant="outline" 
+              onClick={() => window.open(shareUrls.linkedin, '_blank')}
+              className="flex items-center gap-1"
+              data-testid="button-share-linkedin-fallback"
+            >
+              <Linkedin className="h-3 w-3" />
+              LinkedIn
+            </Button>
+            <Button 
+              size="sm" 
+              variant="outline" 
+              onClick={() => window.open(shareUrls.whatsapp, '_blank')}
+              className="flex items-center gap-1"
+              data-testid="button-share-whatsapp-fallback"
+            >
+              <MessageCircle className="h-3 w-3" />
+              WhatsApp
+            </Button>
+          </div>
+        ),
       });
     });
   };
@@ -239,7 +304,13 @@ export default function Progress() {
             <h1 className="text-lg font-bold text-foreground" data-testid="title-progress">
               Your Progress
             </h1>
-            <Button variant="ghost" size="icon" className="w-10 h-10 bg-muted rounded-xl">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="w-10 h-10 bg-muted rounded-xl"
+              onClick={handleShareProgress}
+              data-testid="button-share-header"
+            >
               <Share2 className="h-5 w-5 text-muted-foreground" />
             </Button>
           </div>
