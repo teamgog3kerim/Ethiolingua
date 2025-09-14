@@ -1,8 +1,32 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Mic, Users, Star, Globe } from "lucide-react";
+import { useEffect } from "react";
 
 export default function Landing() {
+  useEffect(() => {
+    // Set document title and meta description for SEO
+    document.title = "Learn Amharic - AI-Powered Language Learning | AmharicAI";
+    
+    // Set meta description
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', 'Learn Amharic with AI-powered lessons designed for English and Arabic speakers. Start your free trial with 5 lessons and join 10,000+ learners mastering Ethiopian language.');
+    } else {
+      const meta = document.createElement('meta');
+      meta.name = 'description';
+      meta.content = 'Learn Amharic with AI-powered lessons designed for English and Arabic speakers. Start your free trial with 5 lessons and join 10,000+ learners mastering Ethiopian language.';
+      document.head.appendChild(meta);
+    }
+
+    // Set language attribute
+    document.documentElement.lang = 'en';
+    
+    return () => {
+      // Reset title when component unmounts
+      document.title = 'AmharicAI - Learn Amharic Language';
+    };
+  }, []);
   const handleSignIn = () => {
     window.location.href = "/api/login";
   };

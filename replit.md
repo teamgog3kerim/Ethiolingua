@@ -57,8 +57,8 @@ Key AI decisions:
 - **Replit Authentication**: OIDC-based user authentication and authorization
 
 ## Payment Processing
-- **Stripe**: Integrated for subscription management and payment processing
-- **Binance Pay**: Alternative cryptocurrency payment option for global accessibility
+- **Binance Pay**: Cryptocurrency payment option for global accessibility and subscription management
+- **Internal subscription system**: Uses database subscriptionStatus field for access control
 
 ## Audio Processing
 - **Web Speech API**: Browser-based speech recognition for pronunciation practice
