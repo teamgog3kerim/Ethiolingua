@@ -5,11 +5,36 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ProgressRing } from "@/components/ProgressRing";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
+import { 
+  ArrowLeft, 
+  Share2, 
+  Check, 
+  Lock, 
+  Calendar,
+  Zap,
+  Flame,
+  GraduationCap,
+  CalendarCheck,
+  Facebook,
+  Twitter,
+  Linkedin,
+  MessageCircle
+} from "lucide-react";
+
+// Define proper types for the stats data
+interface UserStats {
+  completedLessons: number;
+  currentStreak: number;
+  totalTimeMinutes: number;
+  averageScore: number;
+}
 
 export default function Progress() {
   const { user } = useAuth();
+  const { toast } = useToast();
   
-  const { data: stats, isLoading: statsLoading } = useQuery({
+  const { data: stats, isLoading: statsLoading } = useQuery<UserStats>({
     queryKey: ["/api/user/stats"],
     retry: false,
   });
@@ -31,6 +56,99 @@ export default function Progress() {
   const totalLessons = 20; // Beginner level
   const progressPercentage = Math.round((completedLessons / totalLessons) * 100);
 
+  // Social sharing functionality
+  const handleShareProgress = async () => {
+    // Create personalized sharing message
+    const earnedAchievements = achievements.filter(a => a.earned);
+    const achievementText = earnedAchievements.length > 0 
+      ? `I've earned ${earnedAchievements.length} achievements including: ${earnedAchievements.map(a => a.name).join(', ')}!` 
+      : 'I\'m making great progress!';
+    
+    const shareText = `🎉 I'm learning Amharic with AmharicAI! \n\n` +
+      `📊 My Progress: ${progressPercentage}% complete\n` +
+      `📚 Completed ${completedLessons} of ${totalLessons} lessons\n` +
+      `🔥 ${stats?.currentStreak || 0}-day learning streak\n` +
+      `⏰ ${((stats?.totalTimeMinutes || 0) / 60).toFixed(1)} hours studied\n` +
+      `${achievementText}\n\n` +
+      `Join me in learning Amharic! Start your free trial at AmharicAI 🇪🇹\n\n` +
+      `#AmharicLearning #LanguageLearning #Ethiopia #AI`;
+
+    const shareUrl = window.location.origin;
+
+    try {
+      // Try Web Share API first (mobile devices)
+      if (navigator.share) {
+        await navigator.share({
+          title: 'My Amharic Learning Progress - AmharicAI',
+          text: shareText,
+          url: shareUrl,
+        });
+        toast({
+          title: "Shared successfully!",
+          description: "Thanks for sharing your progress!",
+        });
+      } else {
+        // Fallback: Show sharing options
+        showSharingOptions(shareText, shareUrl);
+      }
+    } catch (error) {
+      // User cancelled or error occurred
+      console.log('Sharing cancelled or failed:', error);
+      showSharingOptions(shareText, shareUrl);
+    }
+  };
+
+  const showSharingOptions = (shareText: string, shareUrl: string) => {
+    const encodedText = encodeURIComponent(shareText);
+    const encodedUrl = encodeURIComponent(shareUrl);
+    
+    // Create sharing URLs for different platforms
+    const shareUrls = {
+      twitter: `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}`,
+      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}&summary=${encodedText}`,
+      whatsapp: `https://wa.me/?text=${encodedText}%20${encodedUrl}`,
+    };
+
+    // Copy to clipboard as fallback
+    const fullShareText = `${shareText}\n\n${shareUrl}`;
+    navigator.clipboard.writeText(fullShareText).then(() => {
+      toast({
+        title: "Copied to clipboard!",
+        description: "Share text copied. You can now paste it on your favorite social platform.",
+        action: (
+          <div className="flex gap-2 mt-2">
+            <Button 
+              size="sm" 
+              variant="outline" 
+              onClick={() => window.open(shareUrls.twitter, '_blank')}
+              className="flex items-center gap-1"
+            >
+              <Twitter className="h-3 w-3" />
+              Twitter
+            </Button>
+            <Button 
+              size="sm" 
+              variant="outline" 
+              onClick={() => window.open(shareUrls.facebook, '_blank')}
+              className="flex items-center gap-1"
+            >
+              <Facebook className="h-3 w-3" />
+              Facebook
+            </Button>
+          </div>
+        ),
+      });
+    }).catch(() => {
+      // Fallback: Just open Twitter share
+      window.open(shareUrls.twitter, '_blank');
+      toast({
+        title: "Share your progress!",
+        description: "A new tab opened with your sharing message.",
+      });
+    });
+  };
+
   // Mock weekly activity data
   const weekDays = [
     { day: 'Mon', completed: true },
@@ -48,7 +166,7 @@ export default function Progress() {
       name: "5-Day Streak",
       description: "Earned today",
       icon: "fire",
-      earned: stats?.currentStreak >= 5,
+      earned: (stats?.currentStreak || 0) >= 5,
       color: "secondary"
     },
     {
@@ -115,14 +233,14 @@ export default function Progress() {
           <div className="flex items-center justify-between">
             <Link href="/">
               <Button variant="ghost" size="icon" className="w-10 h-10 bg-muted rounded-xl">
-                <i className="fas fa-arrow-left text-muted-foreground"></i>
+                <ArrowLeft className="h-5 w-5 text-muted-foreground" />
               </Button>
             </Link>
             <h1 className="text-lg font-bold text-foreground" data-testid="title-progress">
               Your Progress
             </h1>
             <Button variant="ghost" size="icon" className="w-10 h-10 bg-muted rounded-xl">
-              <i className="fas fa-share text-muted-foreground"></i>
+              <Share2 className="h-5 w-5 text-muted-foreground" />
             </Button>
           </div>
         </div>
@@ -195,11 +313,11 @@ export default function Progress() {
                       'bg-muted'
                     }`}>
                       {level.completed ? (
-                        <i className="fas fa-check text-primary-foreground"></i>
+                        <Check className="h-5 w-5 text-primary-foreground" />
                       ) : level.current ? (
                         <div className="w-6 h-6 bg-primary rounded-full"></div>
                       ) : (
-                        <i className="fas fa-lock text-muted-foreground"></i>
+                        <Lock className="h-5 w-5 text-muted-foreground" />
                       )}
                     </div>
                     <div>
@@ -207,7 +325,7 @@ export default function Progress() {
                       <p className="text-sm text-muted-foreground">{level.description}</p>
                       {level.locked && (
                         <div className="flex items-center gap-1 mt-1">
-                          <i className="fas fa-lock text-muted-foreground text-xs"></i>
+                          <Lock className="h-3 w-3 text-muted-foreground" />
                           <span className="text-xs text-muted-foreground">Upgrade to Pro to unlock</span>
                         </div>
                       )}
@@ -248,7 +366,7 @@ export default function Progress() {
                     day.completed ? 'bg-primary' : 'bg-muted'
                   }`}>
                     {day.completed ? (
-                      <i className="fas fa-check text-primary-foreground text-xs"></i>
+                      <Check className="h-3 w-3 text-primary-foreground" />
                     ) : (
                       <div className="w-3 h-3 border-2 border-muted-foreground rounded-full"></div>
                     )}
@@ -286,14 +404,46 @@ export default function Progress() {
               >
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 ${
                   achievement.earned 
-                    ? `bg-${achievement.color}/20` 
+                    ? achievement.color === 'secondary' ? 'bg-secondary/20' :
+                      achievement.color === 'primary' ? 'bg-primary/20' :
+                      achievement.color === 'accent' ? 'bg-accent/20' : 'bg-muted/20'
                     : 'bg-muted'
                 }`}>
-                  <i className={`fas fa-${achievement.icon} ${
-                    achievement.earned 
-                      ? `text-${achievement.color}` 
-                      : 'text-muted-foreground'
-                  } text-xl`}></i>
+                  {achievement.icon === 'fire' ? (
+                    <Flame className={`h-6 w-6 ${
+                      achievement.earned 
+                        ? achievement.color === 'secondary' ? 'text-secondary' :
+                          achievement.color === 'primary' ? 'text-primary' :
+                          achievement.color === 'accent' ? 'text-accent' : 'text-muted-foreground'
+                        : 'text-muted-foreground'
+                    }`} />
+                  ) : achievement.icon === 'graduation-cap' ? (
+                    <GraduationCap className={`h-6 w-6 ${
+                      achievement.earned 
+                        ? achievement.color === 'secondary' ? 'text-secondary' :
+                          achievement.color === 'primary' ? 'text-primary' :
+                          achievement.color === 'accent' ? 'text-accent' : 'text-muted-foreground'
+                        : 'text-muted-foreground'
+                    }`} />
+                  ) : achievement.icon === 'calendar-check' ? (
+                    <CalendarCheck className={`h-6 w-6 ${
+                      achievement.earned 
+                        ? achievement.color === 'secondary' ? 'text-secondary' :
+                          achievement.color === 'primary' ? 'text-primary' :
+                          achievement.color === 'accent' ? 'text-accent' : 'text-muted-foreground'
+                        : 'text-muted-foreground'
+                    }`} />
+                  ) : achievement.icon === 'bolt' ? (
+                    <Zap className={`h-6 w-6 ${
+                      achievement.earned 
+                        ? achievement.color === 'secondary' ? 'text-secondary' :
+                          achievement.color === 'primary' ? 'text-primary' :
+                          achievement.color === 'accent' ? 'text-accent' : 'text-muted-foreground'
+                        : 'text-muted-foreground'
+                    }`} />
+                  ) : (
+                    <Calendar className={`h-6 w-6 text-muted-foreground`} />
+                  )}
                 </div>
                 <h4 className="font-semibold text-foreground text-sm mb-1">
                   {achievement.name}
@@ -309,10 +459,11 @@ export default function Progress() {
           <h3 className="font-bold text-foreground mb-2">Share Your Progress</h3>
           <p className="text-muted-foreground text-sm mb-4">Let friends know about your Amharic learning journey</p>
           <Button 
+            onClick={handleShareProgress}
             className="bg-primary text-primary-foreground font-medium py-3 px-6 rounded-2xl hover:bg-primary/90 transition-colors"
             data-testid="button-share-progress"
           >
-            <i className="fas fa-share mr-2"></i>
+            <Share2 className="h-4 w-4 mr-2" />
             Share Achievement
           </Button>
         </Card>
