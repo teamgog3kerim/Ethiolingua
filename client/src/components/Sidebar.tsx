@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { ProgressRing } from "@/components/ProgressRing";
 import { useAuth } from "@/hooks/useAuth";
 import { 
   Home, 
@@ -30,29 +31,42 @@ interface SidebarProps {
 export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
   const { user, isAuthenticated } = useAuth();
   const [location] = useLocation();
-  const [autoHideTimer, setAutoHideTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
+  const autoHideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Auto-hide functionality
+  // Keyboard navigation and cleanup
   useEffect(() => {
-    if (isOpen && autoHideTimer) {
-      clearTimeout(autoHideTimer);
-      setAutoHideTimer(null);
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && isOpen) {
+        onToggle();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("keydown", handleKeyDown);
     }
-  }, [isOpen, autoHideTimer]);
+
+    // Cleanup function
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      if (autoHideTimer.current) {
+        clearTimeout(autoHideTimer.current);
+        autoHideTimer.current = null;
+      }
+    };
+  }, [isOpen, onToggle]);
 
   const handleMouseLeave = () => {
     if (isOpen) {
-      const timer = setTimeout(() => {
+      autoHideTimer.current = setTimeout(() => {
         onToggle();
       }, 2000); // Auto-hide after 2 seconds of inactivity
-      setAutoHideTimer(timer);
     }
   };
 
   const handleMouseEnter = () => {
-    if (autoHideTimer) {
-      clearTimeout(autoHideTimer);
-      setAutoHideTimer(null);
+    if (autoHideTimer.current) {
+      clearTimeout(autoHideTimer.current);
+      autoHideTimer.current = null;
     }
   };
 
@@ -111,12 +125,15 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
       )}
       
       {/* Sidebar */}
-      <div
+      <aside
         className={`fixed top-0 left-0 h-full bg-card border-r border-border z-50 transition-all duration-300 ease-in-out ${
           isOpen ? "w-80" : "w-0"
         } overflow-hidden shadow-xl`}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        role="navigation"
+        aria-label="Main navigation"
+        aria-hidden={!isOpen}
       >
         <div className="flex flex-col h-full w-80">
           {/* Header */}
@@ -161,7 +178,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
                 </div>
               </div>
               
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between mb-3">
                 <Badge 
                   variant={user.subscriptionStatus === "active" ? "default" : "secondary"}
                   className="text-xs"
@@ -173,23 +190,56 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
                   <span className="capitalize">{user.nativeLanguage || "English"}</span>
                 </div>
               </div>
+              
+              {/* Progress Section */}
+              <div className="flex items-center justify-between bg-background/50 rounded-lg p-3">
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-medium text-muted-foreground">Daily Progress</span>
+                    <span className="text-xs font-semibold text-foreground">75%</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <ProgressRing 
+                      percentage={75} 
+                      size={40} 
+                      strokeWidth={4}
+                      className="flex-shrink-0"
+                    />
+                    <div className="text-xs space-y-1">
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <span>🎯</span>
+                        <span>12/15 lessons</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <span>🔥</span>
+                        <span>7-day streak</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </Card>
           )}
 
           {/* Navigation Menu */}
-          <nav className="flex-1 px-4 pb-4">
+          <nav className="flex-1 px-4 pb-4" role="navigation" aria-label="Primary navigation">
             <div className="space-y-2">
               {menuItems.map((item, index) => (
-                <Link key={index} href={item.href}>
-                  <Button
-                    variant={item.active ? "default" : "ghost"}
-                    className={`w-full justify-start gap-3 h-12 text-left font-medium transition-all duration-200 ${
-                      item.active 
-                        ? "bg-primary text-primary-foreground shadow-md" 
-                        : "hover:bg-muted hover:text-foreground"
-                    }`}
+                <Button
+                  key={index}
+                  asChild
+                  variant={item.active ? "default" : "ghost"}
+                  className={`w-full justify-start gap-3 h-12 text-left font-medium transition-all duration-200 ${
+                    item.active 
+                      ? "bg-primary text-primary-foreground shadow-md" 
+                      : "hover:bg-muted hover:text-foreground"
+                  }`}
+                  data-testid={`button-nav-${item.label.toLowerCase().replace(" ", "-")}`}
+                >
+                  <Link 
+                    href={item.href}
                     onClick={onToggle}
-                    data-testid={`button-nav-${item.label.toLowerCase().replace(" ", "-")}`}
+                    aria-current={item.active ? "page" : undefined}
                   >
                     <item.icon className="w-5 h-5" />
                     <span>{item.label}</span>
@@ -198,8 +248,8 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
                         Upgrade
                       </Badge>
                     )}
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
               ))}
             </div>
 
@@ -207,33 +257,33 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
 
             {/* Language & Settings */}
             <div className="space-y-2">
-              <Link href="/settings/language">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start gap-3 h-12 hover:bg-muted"
-                  onClick={onToggle}
-                  data-testid="button-nav-language"
-                >
+              <Button
+                asChild
+                variant="ghost"
+                className="w-full justify-start gap-3 h-12 hover:bg-muted"
+                data-testid="button-nav-language"
+              >
+                <Link href="/settings/language" onClick={onToggle}>
                   <Languages className="w-5 h-5" />
                   <span>Language</span>
                   <Badge variant="outline" className="ml-auto text-xs">
                     {user?.interfaceLanguage === "arabic" ? "العربية" : 
                      user?.interfaceLanguage === "amharic" ? "አማርኛ" : "English"}
                   </Badge>
-                </Button>
-              </Link>
+                </Link>
+              </Button>
 
-              <Link href="/settings">
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start gap-3 h-12 hover:bg-muted"
-                  onClick={onToggle}
-                  data-testid="button-nav-settings"
-                >
+              <Button
+                asChild
+                variant="ghost"
+                className="w-full justify-start gap-3 h-12 hover:bg-muted"
+                data-testid="button-nav-settings"
+              >
+                <Link href="/settings" onClick={onToggle}>
                   <Settings className="w-5 h-5" />
                   <span>Settings</span>
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </div>
 
             {/* Logout */}
@@ -273,7 +323,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
             </div>
           </div>
         </div>
-      </div>
+      </aside>
 
       {/* Sidebar Toggle Button (when closed) */}
       {!isOpen && (
@@ -281,6 +331,9 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
           onClick={onToggle}
           className="fixed top-4 left-4 z-40 w-12 h-12 rounded-xl bg-primary hover:bg-primary/90 shadow-lg transition-all duration-300"
           data-testid="button-open-sidebar"
+          aria-expanded={isOpen}
+          aria-controls="main-sidebar"
+          aria-label="Open navigation menu"
         >
           <i className="fas fa-bars text-primary-foreground"></i>
         </Button>
