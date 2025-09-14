@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Mic, Users, Star, Globe } from "lucide-react";
 
 export default function Landing() {
   const handleSignIn = () => {
@@ -11,28 +12,29 @@ export default function Landing() {
       {/* Ethiopian cultural pattern background */}
       <div className="absolute inset-0 opacity-10 pattern-bg" />
       
-      <div className="text-center z-10 px-6 max-w-md mx-auto">
+      <div className="text-center z-10 px-4 sm:px-6 lg:px-8 max-w-xs sm:max-w-md lg:max-w-lg xl:max-w-xl mx-auto">
         {/* App Icon/Logo */}
-        <div className="mb-8 relative">
-          <div className="w-24 h-24 mx-auto bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center shadow-2xl">
-            <div className="amharic-text text-4xl text-white font-bold">አ</div>
+        <div className="mb-6 sm:mb-8 relative" data-testid="logo-container">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 mx-auto bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center shadow-2xl" aria-label="Learn Amharic App Logo">
+            <div className="amharic-text text-3xl sm:text-4xl lg:text-5xl text-white font-bold" role="img" aria-label="Amharic letter Alef">አ</div>
           </div>
-          <div className="absolute -top-2 -right-2 w-8 h-8 bg-secondary rounded-full flex items-center justify-center shadow-lg">
-            <i className="fas fa-microphone text-white text-sm"></i>
+          <div className="absolute -top-2 -right-2 w-7 h-7 sm:w-8 sm:h-8 bg-secondary rounded-full flex items-center justify-center shadow-lg" aria-label="Voice feature indicator">
+            <Mic className="h-4 w-4 text-white" />
           </div>
         </div>
         
-        <h1 className="text-4xl font-bold text-white mb-2" data-testid="title-main">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white/95 mb-2 leading-tight" data-testid="title-main">
           Learn Amharic
         </h1>
-        <p className="text-white/90 text-lg mb-2">AI-Powered Language Learning</p>
-        <p className="text-white/75 text-sm mb-8">For English & Arabic Speakers</p>
+        <p className="text-white/90 text-base sm:text-lg lg:text-xl mb-2">AI-Powered Language Learning</p>
+        <p className="text-white/75 text-sm sm:text-base mb-6 sm:mb-8">For English & Arabic Speakers</p>
         
-        <div className="space-y-3">
+        <div className="space-y-3 sm:space-y-4">
           <Button 
             onClick={handleSignIn}
-            className="w-full bg-white text-primary font-semibold py-4 px-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] h-auto"
+            className="w-full md:w-auto md:px-12 bg-white text-primary font-semibold py-4 px-6 sm:px-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] h-auto min-h-[3rem]"
             data-testid="button-sign-in"
+            aria-label="Start free trial - First 5 lessons free"
           >
             <div>
               Start Free Trial
@@ -45,25 +47,26 @@ export default function Landing() {
           <Button
             variant="outline"
             onClick={handleSignIn}
-            className="w-full bg-white/20 backdrop-blur-sm text-white font-medium py-3 px-8 rounded-2xl border border-white/30 hover:bg-white/30 transition-all duration-300"
+            className="w-full md:w-auto md:px-12 bg-white/20 backdrop-blur-sm text-white font-medium py-3 px-6 sm:px-8 rounded-2xl border border-white/30 hover:bg-white/30 transition-all duration-300 min-h-[2.75rem]"
             data-testid="button-existing-account"
+            aria-label="Sign in to existing account"
           >
             Already have an account? Sign In
           </Button>
         </div>
         
-        <div className="mt-8 flex items-center justify-center gap-6 text-white/60">
-          <div className="text-center">
-            <i className="fas fa-users text-2xl mb-2"></i>
-            <p className="text-xs">10K+ Learners</p>
+        <div className="mt-6 sm:mt-8 grid grid-cols-3 gap-3 sm:gap-4 lg:gap-6 text-white/60 max-w-xs sm:max-w-sm mx-auto">
+          <div className="text-center" data-testid="stat-learners">
+            <Users className="h-5 w-5 sm:h-6 sm:w-6 mb-1 sm:mb-2 mx-auto" aria-hidden="true" />
+            <p className="text-xs sm:text-sm font-medium">10K+ Learners</p>
           </div>
-          <div className="text-center">
-            <i className="fas fa-star text-2xl mb-2"></i>
-            <p className="text-xs">4.9 Rating</p>
+          <div className="text-center" data-testid="stat-rating">
+            <Star className="h-5 w-5 sm:h-6 sm:w-6 mb-1 sm:mb-2 mx-auto" aria-hidden="true" />
+            <p className="text-xs sm:text-sm font-medium">4.9 Rating</p>
           </div>
-          <div className="text-center">
-            <i className="fas fa-globe text-2xl mb-2"></i>
-            <p className="text-xs">2 Languages</p>
+          <div className="text-center" data-testid="stat-languages">
+            <Globe className="h-5 w-5 sm:h-6 sm:w-6 mb-1 sm:mb-2 mx-auto" aria-hidden="true" />
+            <p className="text-xs sm:text-sm font-medium">2 Languages</p>
           </div>
         </div>
       </div>
