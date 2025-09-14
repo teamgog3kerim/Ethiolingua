@@ -40,8 +40,6 @@ export const users = pgTable("users", {
   interfaceLanguage: varchar("interface_language").notNull().default("english"), // english, arabic, amharic
   theme: varchar("theme").default("default"), // light, dark, default
   alwaysLoggedIn: boolean("always_logged_in").default(false),
-  stripeCustomerId: varchar("stripe_customer_id"),
-  stripeSubscriptionId: varchar("stripe_subscription_id"),
   subscriptionStatus: varchar("subscription_status").default("trial"), // trial, active, canceled, expired
   trialEndsAt: timestamp("trial_ends_at").defaultNow(),
   createdAt: timestamp("created_at").defaultNow(),

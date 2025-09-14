@@ -22,7 +22,7 @@ interface Tutor {
 
 export default function Tutors() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterSpecialty, setFilterSpecialty] = useState("");
+  const [filterSpecialty, setFilterSpecialty] = useState("all");
   const [sortBy, setSortBy] = useState("rating");
 
   const { data: tutors, isLoading, error } = useQuery<Tutor[]>({
@@ -57,7 +57,7 @@ export default function Tutors() {
       tutor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       tutor.bio?.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesSpecialty = !filterSpecialty || 
+    const matchesSpecialty = filterSpecialty === "all" || 
       tutor.specialties.includes(filterSpecialty);
     
     return matchesSearch && matchesSpecialty;
@@ -125,7 +125,7 @@ export default function Tutors() {
                   <SelectValue placeholder="All specialties" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All specialties</SelectItem>
+                  <SelectItem value="all">All specialties</SelectItem>
                   <SelectItem value="beginner">Beginner</SelectItem>
                   <SelectItem value="pronunciation">Pronunciation</SelectItem>
                   <SelectItem value="conversation">Conversation</SelectItem>
