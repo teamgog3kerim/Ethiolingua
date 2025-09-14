@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import binanceQRCode from "@assets/binance-1757796747327 (2)_1757853481242.png";
 
 
 
@@ -118,7 +119,7 @@ export default function Subscription() {
               {/* QR Code */}
               <div className="bg-white rounded-2xl p-4 mb-4">
                 <img 
-                  src="/attached_assets/binance-1757796747327 (2)_1757853481242.png" 
+                  src={binanceQRCode} 
                   alt="Binance Pay QR Code" 
                   className="w-48 h-48 mx-auto object-contain"
                 />
