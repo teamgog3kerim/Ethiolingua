@@ -17,6 +17,8 @@ import Progress from "@/pages/Progress";
 import Admin from "@/pages/Admin";
 import PronunciationPractice from "@/pages/PronunciationPractice";
 import Tutors from "@/pages/Tutors";
+import Settings from "@/pages/Settings";
+import LanguageSettings from "@/pages/LanguageSettings";
 
 function Router() {
   const { isAuthenticated, isLoading, user } = useAuth();
@@ -49,6 +51,8 @@ function Router() {
                 <Route path="/admin" component={Admin} />
                 <Route path="/pronunciation/:id" component={PronunciationPractice} />
                 <Route path="/tutors" component={Tutors} />
+                <Route path="/settings" component={Settings} />
+                <Route path="/settings/language" component={LanguageSettings} />
               </Switch>
             </AppLayout>
           )}

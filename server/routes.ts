@@ -170,6 +170,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // User settings
+  app.post('/api/user/settings', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { theme, interfaceLanguage, nativeLanguage, alwaysLoggedIn } = req.body;
+
+      // Get current user first
+      const currentUser = await storage.getUser(userId);
+      if (!currentUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Build updates object
+      const updates: any = {
+        email: currentUser.email,
+        firstName: currentUser.firstName,
+        lastName: currentUser.lastName,
+        profileImageUrl: currentUser.profileImageUrl,
+        nativeLanguage: currentUser.nativeLanguage,
+      };
+
+      if (theme) updates.theme = theme;
+      if (interfaceLanguage) updates.interfaceLanguage = interfaceLanguage;
+      if (nativeLanguage) updates.nativeLanguage = nativeLanguage;
+      if (alwaysLoggedIn !== undefined) updates.alwaysLoggedIn = alwaysLoggedIn;
+
+      // Update user with new settings
+      const user = await storage.upsertUser(updates);
+      res.json(user);
+    } catch (error) {
+      console.error("Error updating user settings:", error);
+      res.status(500).json({ message: "Failed to update settings" });
+    }
+  });
+
   // AI Tutor Chat
   app.post('/api/tutor/chat', isAuthenticated, async (req: any, res) => {
     try {

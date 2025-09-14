@@ -6,6 +6,21 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
+import { 
+  Home, 
+  TrendingUp, 
+  Dumbbell, 
+  Crown, 
+  Bot, 
+  Video, 
+  Languages, 
+  Settings, 
+  X, 
+  LogOut,
+  HelpCircle,
+  Headphones,
+  Star
+} from "lucide-react";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -15,7 +30,7 @@ interface SidebarProps {
 export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
   const { user, isAuthenticated } = useAuth();
   const [location] = useLocation();
-  const [autoHideTimer, setAutoHideTimer] = useState<NodeJS.Timeout | null>(null);
+  const [autoHideTimer, setAutoHideTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
 
   // Auto-hide functionality
   useEffect(() => {
@@ -43,37 +58,37 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
 
   const menuItems = [
     {
-      icon: "fas fa-home",
+      icon: Home,
       label: "Home",
       href: "/",
       active: location === "/",
     },
     {
-      icon: "fas fa-chart-line",
+      icon: TrendingUp,
       label: "Your Progress",
       href: "/progress",
       active: location === "/progress",
     },
     {
-      icon: "fas fa-dumbbell",
+      icon: Dumbbell,
       label: "Quick Practice",
-      href: "/practice",
-      active: location.startsWith("/practice"),
+      href: "/pronunciation/1",
+      active: location.startsWith("/pronunciation"),
     },
     {
-      icon: "fas fa-crown",
+      icon: Crown,
       label: "Pricing",
       href: "/subscription",
       active: location === "/subscription",
     },
     {
-      icon: "fas fa-robot",
+      icon: Bot,
       label: "AI Tutor",
       href: "/tutor",
       active: location === "/tutor",
     },
     {
-      icon: "fas fa-video",
+      icon: Video,
       label: "Live Tutors",
       href: "/tutors",
       active: location === "/tutors",
@@ -119,7 +134,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
               className="w-8 h-8"
               data-testid="button-close-sidebar"
             >
-              <i className="fas fa-times text-muted-foreground"></i>
+              <X className="w-4 h-4 text-muted-foreground" />
             </Button>
           </div>
 
@@ -128,7 +143,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
             <Card className="m-4 p-4 bg-gradient-to-br from-primary/10 to-secondary/10 border-primary/20">
               <div className="flex items-center gap-3 mb-3">
                 <Avatar className="w-12 h-12">
-                  <AvatarImage src={user.profileImageUrl} alt="Profile" />
+                  <AvatarImage src={user.profileImageUrl || undefined} alt="Profile" />
                   <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
                     {getUserInitials()}
                   </AvatarFallback>
@@ -154,7 +169,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
                   {user.subscriptionStatus === "active" ? "Pro" : "Free Trial"}
                 </Badge>
                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <i className="fas fa-globe text-xs"></i>
+                  <Languages className="w-3 h-3" />
                   <span className="capitalize">{user.nativeLanguage || "English"}</span>
                 </div>
               </div>
@@ -176,7 +191,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
                     onClick={onToggle}
                     data-testid={`button-nav-${item.label.toLowerCase().replace(" ", "-")}`}
                   >
-                    <i className={`${item.icon} w-5 text-center`}></i>
+                    <item.icon className="w-5 h-5" />
                     <span>{item.label}</span>
                     {item.label === "Pricing" && user?.subscriptionStatus !== "active" && (
                       <Badge variant="secondary" className="ml-auto text-xs">
@@ -199,7 +214,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
                   onClick={onToggle}
                   data-testid="button-nav-language"
                 >
-                  <i className="fas fa-language w-5 text-center"></i>
+                  <Languages className="w-5 h-5" />
                   <span>Language</span>
                   <Badge variant="outline" className="ml-auto text-xs">
                     {user?.interfaceLanguage === "arabic" ? "العربية" : 
@@ -215,7 +230,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
                   onClick={onToggle}
                   data-testid="button-nav-settings"
                 >
-                  <i className="fas fa-cog w-5 text-center"></i>
+                  <Settings className="w-5 h-5" />
                   <span>Settings</span>
                 </Button>
               </Link>
@@ -233,7 +248,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
                   }}
                   data-testid="button-logout"
                 >
-                  <i className="fas fa-sign-out-alt w-5 text-center"></i>
+                  <LogOut className="w-5 h-5" />
                   <span>Logout</span>
                 </Button>
               </>
@@ -246,13 +261,13 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
               <p className="text-xs text-muted-foreground mb-2">Learn Amharic v1.0</p>
               <div className="flex items-center justify-center gap-4 text-muted-foreground">
                 <Button variant="ghost" size="sm" className="h-8 px-2">
-                  <i className="fas fa-question-circle text-sm"></i>
+                  <HelpCircle className="w-4 h-4" />
                 </Button>
                 <Button variant="ghost" size="sm" className="h-8 px-2">
-                  <i className="fas fa-headset text-sm"></i>
+                  <Headphones className="w-4 h-4" />
                 </Button>
                 <Button variant="ghost" size="sm" className="h-8 px-2">
-                  <i className="fas fa-star text-sm"></i>
+                  <Star className="w-4 h-4" />
                 </Button>
               </div>
             </div>
