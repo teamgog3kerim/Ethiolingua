@@ -26,8 +26,10 @@ export interface IStorage {
   
   // Lesson operations
   getAllLessons(): Promise<Lesson[]>;
+  getLessons(): Promise<Lesson[]>;
   getLesson(id: number): Promise<Lesson | undefined>;
   getLessonsByLevel(level: string): Promise<Lesson[]>;
+  updateLessonAudio(lessonId: number, audioUrl: string, slowAudioUrl: string): Promise<Lesson>;
   
   // Progress operations
   getUserProgress(userId: string): Promise<UserProgress[]>;
@@ -102,8 +104,24 @@ export class DatabaseStorage implements IStorage {
     return lesson;
   }
 
+  async getLessons(): Promise<Lesson[]> {
+    return await db.select().from(lessons).orderBy(lessons.orderIndex);
+  }
+
   async getLessonsByLevel(level: string): Promise<Lesson[]> {
     return await db.select().from(lessons).where(eq(lessons.level, level)).orderBy(lessons.orderIndex);
+  }
+
+  async updateLessonAudio(lessonId: number, audioUrl: string, slowAudioUrl: string): Promise<Lesson> {
+    const [lesson] = await db
+      .update(lessons)
+      .set({
+        audioUrl,
+        slowAudioUrl,
+      })
+      .where(eq(lessons.id, lessonId))
+      .returning();
+    return lesson;
   }
 
   // Progress operations

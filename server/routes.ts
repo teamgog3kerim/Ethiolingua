@@ -318,6 +318,81 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Audio generation route
+  app.post('/api/generate-lesson-audio', isAuthenticated, async (req: any, res) => {
+    try {
+      const { lessonId } = req.body;
+      
+      if (!lessonId) {
+        return res.status(400).json({ error: "Lesson ID is required" });
+      }
+
+      const lesson = await storage.getLesson(lessonId);
+      if (!lesson) {
+        return res.status(404).json({ error: "Lesson not found" });
+      }
+
+      // Extract Amharic text from lesson content
+      const content = lesson.content as any;
+      const amharicTexts = content?.amharic || [];
+      
+      if (amharicTexts.length === 0) {
+        return res.status(400).json({ error: "No Amharic content found for this lesson" });
+      }
+
+      // Generate audio for the first few key phrases
+      const textToSpeak = amharicTexts.slice(0, 3).join('. '); // First 3 phrases
+      const filename = `lesson${lessonId}`;
+      
+      const audioUrls = await openaiService.generateAndSaveAudio(textToSpeak, filename);
+      
+      // Update lesson with audio URLs
+      await storage.updateLessonAudio(lessonId, audioUrls.normalUrl, audioUrls.slowUrl);
+
+      res.json({ 
+        success: true, 
+        audioUrl: audioUrls.normalUrl,
+        slowAudioUrl: audioUrls.slowUrl
+      });
+    } catch (error) {
+      console.error("Error generating lesson audio:", error);
+      res.status(500).json({ error: "Failed to generate audio" });
+    }
+  });
+
+  // Bulk generate audio for all lessons
+  app.post('/api/generate-all-audio', isAuthenticated, async (req: any, res) => {
+    try {
+      const lessons = await storage.getLessons();
+      const results = [];
+
+      for (const lesson of lessons.slice(0, 10)) { // Limit to first 10 to avoid timeout
+        try {
+          const content = lesson.content as any;
+          const amharicTexts = content?.amharic || [];
+          
+          if (amharicTexts.length > 0) {
+            const textToSpeak = amharicTexts.slice(0, 2).join('. '); // First 2 phrases
+            const filename = `lesson${lesson.id}`;
+            
+            const audioUrls = await openaiService.generateAndSaveAudio(textToSpeak, filename);
+            await storage.updateLessonAudio(lesson.id, audioUrls.normalUrl, audioUrls.slowUrl);
+            
+            results.push({ lessonId: lesson.id, success: true, ...audioUrls });
+          }
+        } catch (error) {
+          console.error(`Error generating audio for lesson ${lesson.id}:`, error);
+          results.push({ lessonId: lesson.id, success: false, error: error.message });
+        }
+      }
+
+      res.json({ results });
+    } catch (error) {
+      console.error("Error in bulk audio generation:", error);
+      res.status(500).json({ error: "Failed to generate audio" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

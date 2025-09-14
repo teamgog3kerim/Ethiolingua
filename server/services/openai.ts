@@ -1,4 +1,6 @@
 import OpenAI from "openai";
+import * as fs from 'fs';
+import * as path from 'path';
 
 const openai = new OpenAI({ 
   apiKey: process.env.OPENAI_API_KEY || process.env.OPENAI_KEY || "fallback_key"
@@ -86,5 +88,52 @@ Current student's native language: ${nativeLanguage}`;
       console.error("OpenAI feedback error:", error);
       return score >= 80 ? "Excellent work! You're making great progress." : "Good effort! Review the mistakes and try again.";
     }
+  }
+
+  async generateAudio(text: string, speed: 'normal' | 'slow' = 'normal'): Promise<Buffer> {
+    try {
+      const response = await openai.audio.speech.create({
+        model: "tts-1",
+        voice: "nova",
+        input: text,
+        speed: speed === 'slow' ? 0.75 : 1.0,
+      });
+
+      const buffer = Buffer.from(await response.arrayBuffer());
+      return buffer;
+    } catch (error) {
+      console.error("OpenAI TTS error:", error);
+      throw new Error("Failed to generate audio: " + (error as Error).message);
+    }
+  }
+
+  async ensureAudioDirectory(): Promise<void> {
+    const audioDir = path.join(process.cwd(), 'public', 'audio');
+    if (!fs.existsSync(audioDir)) {
+      fs.mkdirSync(audioDir, { recursive: true });
+    }
+  }
+
+  async generateAndSaveAudio(text: string, filename: string): Promise<{ normalUrl: string; slowUrl: string }> {
+    await this.ensureAudioDirectory();
+    
+    const audioDir = path.join(process.cwd(), 'public', 'audio');
+    const normalPath = path.join(audioDir, `${filename}.mp3`);
+    const slowPath = path.join(audioDir, `${filename}_slow.mp3`);
+
+    // Generate both normal and slow audio
+    const [normalBuffer, slowBuffer] = await Promise.all([
+      this.generateAudio(text, 'normal'),
+      this.generateAudio(text, 'slow')
+    ]);
+
+    // Save files
+    fs.writeFileSync(normalPath, normalBuffer);
+    fs.writeFileSync(slowPath, slowBuffer);
+
+    return {
+      normalUrl: `/audio/${filename}.mp3`,
+      slowUrl: `/audio/${filename}_slow.mp3`
+    };
   }
 }
