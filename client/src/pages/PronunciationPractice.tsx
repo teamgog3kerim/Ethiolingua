@@ -8,6 +8,8 @@ import { useToast } from "@/hooks/use-toast";
 import { AudioPlayer } from "@/components/AudioPlayer";
 import { SpeechRecognition } from "@/components/SpeechRecognition";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import type { Lesson } from "@shared/schema";
+import { ArrowLeft, ArrowRight, Check, X, Trophy, Star, RotateCcw } from "lucide-react";
 
 interface PronunciationResult {
   score: number;
@@ -24,7 +26,7 @@ export default function PronunciationPractice() {
   const [showResults, setShowResults] = useState(false);
   const { toast } = useToast();
 
-  const { data: lesson, isLoading } = useQuery({
+  const { data: lesson, isLoading } = useQuery<Lesson>({
     queryKey: [`/api/lessons/${lessonId}`],
     enabled: !!lessonId,
   });
@@ -187,11 +189,13 @@ export default function PronunciationPractice() {
               averageScore >= 60 ? 'bg-yellow-100 text-yellow-600' : 
               'bg-red-100 text-red-600'
             }`}>
-              <i className={`text-3xl ${
-                averageScore >= 80 ? 'fas fa-trophy' : 
-                averageScore >= 60 ? 'fas fa-star' : 
-                'fas fa-redo'
-              }`}></i>
+              {averageScore >= 80 ? (
+                <Trophy className="h-8 w-8" />
+              ) : averageScore >= 60 ? (
+                <Star className="h-8 w-8" />
+              ) : (
+                <RotateCcw className="h-8 w-8" />
+              )}
             </div>
             <h2 className="text-2xl font-bold mb-2">
               {averageScore >= 80 ? 'Excellent Work!' : 
@@ -220,14 +224,15 @@ export default function PronunciationPractice() {
             </div>
 
             <div className="flex items-center gap-4 justify-center">
-              <Button onClick={restartPractice} variant="outline">
+              <Button onClick={restartPractice} variant="outline" data-testid="button-restart-practice">
+                <RotateCcw className="h-4 w-4 mr-2" />
                 Practice Again
               </Button>
               <Link href={`/lesson/${lessonId}`}>
-                <Button>Back to Lesson</Button>
+                <Button data-testid="button-back-lesson">Back to Lesson</Button>
               </Link>
               <Link href="/">
-                <Button variant="secondary">Home</Button>
+                <Button variant="secondary" data-testid="button-home">Home</Button>
               </Link>
             </div>
           </Card>
@@ -250,8 +255,8 @@ export default function PronunciationPractice() {
                 {currentPhrase + 1} of {amharicPhrases.length}
               </span>
               <Link href={`/lesson/${lessonId}`}>
-                <Button variant="outline" size="sm">
-                  <i className="fas fa-times mr-2"></i>
+                <Button variant="outline" size="sm" data-testid="button-exit-practice">
+                  <X className="h-4 w-4 mr-2" />
                   Exit
                 </Button>
               </Link>
@@ -281,8 +286,8 @@ export default function PronunciationPractice() {
           {lesson.audioUrl && (
             <div className="mb-6">
               <AudioPlayer
-                audioUrl={lesson.audioUrl}
-                slowAudioUrl={lesson.slowAudioUrl}
+                audioUrl={lesson.audioUrl || undefined}
+                slowAudioUrl={lesson.slowAudioUrl || undefined}
                 label="Listen to pronunciation"
               />
             </div>
@@ -290,7 +295,7 @@ export default function PronunciationPractice() {
 
           {/* Progress indicator */}
           <div className="flex items-center justify-center gap-2 mb-6">
-            {amharicPhrases.map((_, index) => (
+            {amharicPhrases.map((_: any, index: number) => (
               <div
                 key={index}
                 className={`w-3 h-3 rounded-full ${
@@ -323,8 +328,9 @@ export default function PronunciationPractice() {
             onClick={previousPhrase}
             disabled={currentPhrase === 0}
             variant="outline"
+            data-testid="button-previous-phrase"
           >
-            <i className="fas fa-arrow-left mr-2"></i>
+            <ArrowLeft className="h-4 w-4 mr-2" />
             Previous
           </Button>
 
@@ -341,12 +347,12 @@ export default function PronunciationPractice() {
               {currentPhrase + 1 < amharicPhrases.length ? (
                 <>
                   Next
-                  <i className="fas fa-arrow-right ml-2"></i>
+                  <ArrowRight className="h-4 w-4 ml-2" />
                 </>
               ) : (
                 <>
                   Finish
-                  <i className="fas fa-check ml-2"></i>
+                  <Check className="h-4 w-4 ml-2" />
                 </>
               )}
             </Button>

@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
+import { Play, Volume2, VolumeX } from "lucide-react";
 
 interface AudioPlayerProps {
   audioUrl?: string;
@@ -63,7 +64,7 @@ export function AudioPlayer({ audioUrl, slowAudioUrl, label }: AudioPlayerProps)
         {isPlaying ? (
           <div className="w-3 h-3 border-2 border-primary-foreground rounded-full animate-pulse" />
         ) : (
-          <i className="fas fa-play text-primary-foreground text-lg ml-1"></i>
+          <Play className="h-5 w-5 text-primary-foreground fill-current" />
         )}
       </Button>
 
@@ -88,7 +89,7 @@ export function AudioPlayer({ audioUrl, slowAudioUrl, label }: AudioPlayerProps)
           className="flex items-center gap-1 hover:text-foreground transition-colors"
           data-testid="button-normal-speed"
         >
-          <i className="fas fa-volume-up"></i>
+          <Volume2 className="h-4 w-4" />
           Normal Speed
         </Button>
         
@@ -101,7 +102,7 @@ export function AudioPlayer({ audioUrl, slowAudioUrl, label }: AudioPlayerProps)
             className="flex items-center gap-1 hover:text-foreground transition-colors"
             data-testid="button-slow-speed"
           >
-            <i className="fas fa-volume-down"></i>
+            <VolumeX className="h-4 w-4" />
             Slow Speed
           </Button>
         )}
