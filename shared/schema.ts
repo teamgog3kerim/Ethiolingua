@@ -88,11 +88,65 @@ export const tutorConversations = pgTable("tutor_conversations", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Live tutors
+export const liveTutors = pgTable("live_tutors", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  email: varchar("email").unique().notNull(),
+  profileImageUrl: varchar("profile_image_url"),
+  bio: text("bio"),
+  specialties: jsonb("specialties").notNull(), // array of specialties: ["beginner", "pronunciation", "conversation"]
+  languages: jsonb("languages").notNull(), // native languages the tutor speaks
+  hourlyRate: integer("hourly_rate").notNull(), // rate in cents (USD)
+  availability: jsonb("availability").notNull(), // weekly schedule with time slots
+  rating: integer("rating").default(500), // out of 500 (5.00 stars * 100)
+  totalSessions: integer("total_sessions").default(0),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Tutor booking sessions
+export const tutorSessions = pgTable("tutor_sessions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  studentId: varchar("student_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  tutorId: varchar("tutor_id").notNull().references(() => liveTutors.id, { onDelete: "cascade" }),
+  scheduledAt: timestamp("scheduled_at").notNull(),
+  duration: integer("duration_minutes").notNull().default(60), // session length in minutes
+  status: varchar("status").notNull().default("scheduled"), // scheduled, in_progress, completed, cancelled
+  sessionType: varchar("session_type").notNull().default("conversation"), // conversation, pronunciation, lesson_review
+  notes: text("notes"), // special requests or notes
+  meetingRoomId: varchar("meeting_room_id"), // for video chat integration
+  totalCost: integer("total_cost"), // in cents
+  paymentStatus: varchar("payment_status").default("pending"), // pending, paid, refunded
+  studentFeedback: jsonb("student_feedback"), // { rating, comment }
+  tutorFeedback: jsonb("tutor_feedback"), // { rating, comment }
+  recordingUrl: varchar("recording_url"), // optional session recording
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   progress: many(userProgress),
   streaks: many(userStreaks),
   conversations: many(tutorConversations),
+  tutorSessions: many(tutorSessions),
+}));
+
+export const liveTutorsRelations = relations(liveTutors, ({ many }) => ({
+  sessions: many(tutorSessions),
+}));
+
+export const tutorSessionsRelations = relations(tutorSessions, ({ one }) => ({
+  student: one(users, {
+    fields: [tutorSessions.studentId],
+    references: [users.id],
+  }),
+  tutor: one(liveTutors, {
+    fields: [tutorSessions.tutorId],
+    references: [liveTutors.id],
+  }),
 }));
 
 export const lessonsRelations = relations(lessons, ({ many }) => ({
@@ -123,14 +177,20 @@ export const insertLessonSchema = createInsertSchema(lessons);
 export const insertUserProgressSchema = createInsertSchema(userProgress);
 export const insertUserStreakSchema = createInsertSchema(userStreaks);
 export const insertTutorConversationSchema = createInsertSchema(tutorConversations);
+export const insertLiveTutorSchema = createInsertSchema(liveTutors);
+export const insertTutorSessionSchema = createInsertSchema(tutorSessions);
 
 // Types
-export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
+export type UpsertUser = z.infer<typeof insertUserSchema>;
 export type Lesson = typeof lessons.$inferSelect;
 export type UserProgress = typeof userProgress.$inferSelect;
-export type UserStreak = typeof userStreaks.$inferSelect;
-export type TutorConversation = typeof tutorConversations.$inferSelect;
 export type InsertUserProgress = z.infer<typeof insertUserProgressSchema>;
+export type UserStreak = typeof userStreaks.$inferSelect;
 export type InsertUserStreak = z.infer<typeof insertUserStreakSchema>;
+export type TutorConversation = typeof tutorConversations.$inferSelect;
 export type InsertTutorConversation = z.infer<typeof insertTutorConversationSchema>;
+export type LiveTutor = typeof liveTutors.$inferSelect;
+export type InsertLiveTutor = z.infer<typeof insertLiveTutorSchema>;
+export type TutorSession = typeof tutorSessions.$inferSelect;
+export type InsertTutorSession = z.infer<typeof insertTutorSessionSchema>;

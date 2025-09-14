@@ -442,6 +442,134 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Live tutor booking routes
+  app.get('/api/tutors', isAuthenticated, async (req: any, res) => {
+    try {
+      const tutors = await storage.getAllTutors();
+      res.json(tutors);
+    } catch (error) {
+      console.error("Error fetching tutors:", error);
+      res.status(500).json({ error: "Failed to fetch tutors" });
+    }
+  });
+
+  app.get('/api/tutors/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const tutor = await storage.getTutor(id);
+      
+      if (!tutor) {
+        return res.status(404).json({ error: "Tutor not found" });
+      }
+      
+      res.json(tutor);
+    } catch (error) {
+      console.error("Error fetching tutor:", error);
+      res.status(500).json({ error: "Failed to fetch tutor" });
+    }
+  });
+
+  app.post('/api/sessions/book', isAuthenticated, async (req: any, res) => {
+    try {
+      const { tutorId, scheduledAt, duration, sessionType, notes } = req.body;
+      const userId = req.user.claims.sub;
+      
+      // Validate input
+      if (!tutorId || !scheduledAt) {
+        return res.status(400).json({ error: "Tutor ID and scheduled time are required" });
+      }
+
+      // Check if tutor exists
+      const tutor = await storage.getTutor(tutorId);
+      if (!tutor) {
+        return res.status(404).json({ error: "Tutor not found" });
+      }
+
+      // Calculate cost
+      const sessionDuration = duration || 60;
+      const totalCost = Math.round((tutor.hourlyRate / 60) * sessionDuration);
+
+      const sessionData = {
+        studentId: userId,
+        tutorId,
+        scheduledAt: new Date(scheduledAt),
+        duration: sessionDuration,
+        sessionType: sessionType || 'conversation',
+        notes,
+        totalCost,
+        status: 'scheduled' as const,
+        paymentStatus: 'pending' as const,
+      };
+
+      const session = await storage.createSession(sessionData);
+      res.json(session);
+    } catch (error) {
+      console.error("Error booking session:", error);
+      res.status(500).json({ error: "Failed to book session" });
+    }
+  });
+
+  app.get('/api/sessions/my', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const sessions = await storage.getUserSessions(userId);
+      res.json(sessions);
+    } catch (error) {
+      console.error("Error fetching user sessions:", error);
+      res.status(500).json({ error: "Failed to fetch sessions" });
+    }
+  });
+
+  app.get('/api/sessions/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user.claims.sub;
+      
+      const session = await storage.getSession(id);
+      
+      if (!session) {
+        return res.status(404).json({ error: "Session not found" });
+      }
+      
+      // Only allow access to student's own sessions
+      if (session.studentId !== userId) {
+        return res.status(403).json({ error: "Access denied" });
+      }
+      
+      res.json(session);
+    } catch (error) {
+      console.error("Error fetching session:", error);
+      res.status(500).json({ error: "Failed to fetch session" });
+    }
+  });
+
+  app.put('/api/sessions/:id/cancel', isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user.claims.sub;
+      
+      const session = await storage.getSession(id);
+      
+      if (!session) {
+        return res.status(404).json({ error: "Session not found" });
+      }
+      
+      if (session.studentId !== userId) {
+        return res.status(403).json({ error: "Access denied" });
+      }
+      
+      if (session.status === 'completed') {
+        return res.status(400).json({ error: "Cannot cancel completed session" });
+      }
+
+      const cancelledSession = await storage.cancelSession(id);
+      res.json(cancelledSession);
+    } catch (error) {
+      console.error("Error cancelling session:", error);
+      res.status(500).json({ error: "Failed to cancel session" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

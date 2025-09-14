@@ -15,6 +15,7 @@ import Subscription from "@/pages/Subscription";
 import Progress from "@/pages/Progress";
 import Admin from "@/pages/Admin";
 import PronunciationPractice from "@/pages/PronunciationPractice";
+import Tutors from "@/pages/Tutors";
 
 function Router() {
   const { isAuthenticated, isLoading, user } = useAuth();
@@ -45,6 +46,7 @@ function Router() {
               <Route path="/progress" component={Progress} />
               <Route path="/admin" component={Admin} />
               <Route path="/pronunciation/:id" component={PronunciationPractice} />
+              <Route path="/tutors" component={Tutors} />
             </>
           )}
         </>

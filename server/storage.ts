@@ -4,15 +4,21 @@ import {
   userProgress,
   userStreaks,
   tutorConversations,
+  liveTutors,
+  tutorSessions,
   type User,
   type UpsertUser,
   type Lesson,
   type UserProgress,
   type UserStreak,
   type TutorConversation,
+  type LiveTutor,
+  type TutorSession,
   type InsertUserProgress,
   type InsertUserStreak,
   type InsertTutorConversation,
+  type InsertLiveTutor,
+  type InsertTutorSession,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc, sql } from "drizzle-orm";
@@ -44,6 +50,21 @@ export interface IStorage {
   getUserConversations(userId: string): Promise<TutorConversation[]>;
   createConversation(conversation: InsertTutorConversation): Promise<TutorConversation>;
   updateConversation(id: string, messages: any[]): Promise<TutorConversation>;
+  
+  // Live Tutor operations
+  getAllTutors(): Promise<LiveTutor[]>;
+  getAvailableTutors(date?: Date): Promise<LiveTutor[]>;
+  getTutor(id: string): Promise<LiveTutor | undefined>;
+  createTutor(tutor: InsertLiveTutor): Promise<LiveTutor>;
+  updateTutor(id: string, updates: Partial<InsertLiveTutor>): Promise<LiveTutor>;
+  
+  // Session booking operations
+  getUserSessions(userId: string): Promise<TutorSession[]>;
+  getTutorSessions(tutorId: string): Promise<TutorSession[]>;
+  getSession(id: string): Promise<TutorSession | undefined>;
+  createSession(session: InsertTutorSession): Promise<TutorSession>;
+  updateSession(id: string, updates: Partial<InsertTutorSession>): Promise<TutorSession>;
+  cancelSession(id: string): Promise<TutorSession>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -233,6 +254,103 @@ export class DatabaseStorage implements IStorage {
       .where(eq(tutorConversations.id, id))
       .returning();
     return updated;
+  }
+
+  // Live Tutor operations
+  async getAllTutors(): Promise<LiveTutor[]> {
+    return await db
+      .select()
+      .from(liveTutors)
+      .where(eq(liveTutors.isActive, true))
+      .orderBy(desc(liveTutors.rating));
+  }
+
+  async getAvailableTutors(date?: Date): Promise<LiveTutor[]> {
+    // For now, return all active tutors
+    // In a real implementation, you'd filter by availability and existing bookings
+    return await this.getAllTutors();
+  }
+
+  async getTutor(id: string): Promise<LiveTutor | undefined> {
+    const [tutor] = await db.select().from(liveTutors).where(eq(liveTutors.id, id));
+    return tutor;
+  }
+
+  async createTutor(tutor: InsertLiveTutor): Promise<LiveTutor> {
+    const [created] = await db
+      .insert(liveTutors)
+      .values(tutor)
+      .returning();
+    return created;
+  }
+
+  async updateTutor(id: string, updates: Partial<InsertLiveTutor>): Promise<LiveTutor> {
+    const [updated] = await db
+      .update(liveTutors)
+      .set({
+        ...updates,
+        updatedAt: new Date(),
+      })
+      .where(eq(liveTutors.id, id))
+      .returning();
+    return updated;
+  }
+
+  // Session booking operations
+  async getUserSessions(userId: string): Promise<TutorSession[]> {
+    return await db
+      .select()
+      .from(tutorSessions)
+      .where(eq(tutorSessions.studentId, userId))
+      .orderBy(desc(tutorSessions.scheduledAt));
+  }
+
+  async getTutorSessions(tutorId: string): Promise<TutorSession[]> {
+    return await db
+      .select()
+      .from(tutorSessions)
+      .where(eq(tutorSessions.tutorId, tutorId))
+      .orderBy(desc(tutorSessions.scheduledAt));
+  }
+
+  async getSession(id: string): Promise<TutorSession | undefined> {
+    const [session] = await db.select().from(tutorSessions).where(eq(tutorSessions.id, id));
+    return session;
+  }
+
+  async createSession(session: InsertTutorSession): Promise<TutorSession> {
+    const [created] = await db
+      .insert(tutorSessions)
+      .values({
+        ...session,
+        meetingRoomId: `room_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      })
+      .returning();
+    return created;
+  }
+
+  async updateSession(id: string, updates: Partial<InsertTutorSession>): Promise<TutorSession> {
+    const [updated] = await db
+      .update(tutorSessions)
+      .set({
+        ...updates,
+        updatedAt: new Date(),
+      })
+      .where(eq(tutorSessions.id, id))
+      .returning();
+    return updated;
+  }
+
+  async cancelSession(id: string): Promise<TutorSession> {
+    const [cancelled] = await db
+      .update(tutorSessions)
+      .set({
+        status: 'cancelled',
+        updatedAt: new Date(),
+      })
+      .where(eq(tutorSessions.id, id))
+      .returning();
+    return cancelled;
   }
 }
 

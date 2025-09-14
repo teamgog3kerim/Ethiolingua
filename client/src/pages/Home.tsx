@@ -211,13 +211,15 @@ export default function Home() {
               </Card>
             </Link>
             
-            <Card className="p-4 text-center hover:shadow-md transition-all duration-300 opacity-60">
-              <div className="w-12 h-12 bg-secondary/10 rounded-xl flex items-center justify-center mx-auto mb-3">
-                <i className="fas fa-microphone text-secondary"></i>
-              </div>
-              <h3 className="font-semibold text-foreground text-sm">Speaking</h3>
-              <p className="text-xs text-muted-foreground">Pro only</p>
-            </Card>
+            <Link href="/tutors">
+              <Card className="p-4 text-center hover:shadow-md transition-all duration-300 cursor-pointer">
+                <div className="w-12 h-12 bg-secondary/10 rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <i className="fas fa-video text-secondary"></i>
+                </div>
+                <h3 className="font-semibold text-foreground text-sm">Live Tutors</h3>
+                <p className="text-xs text-muted-foreground">Practice with natives</p>
+              </Card>
+            </Link>
             
             <Card className="p-4 text-center hover:shadow-md transition-all duration-300 opacity-60">
               <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-3">
