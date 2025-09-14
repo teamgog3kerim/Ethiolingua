@@ -8,11 +8,13 @@ import { useAuth } from "@/hooks/useAuth";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { ArrowLeft, Languages, Globe } from "lucide-react";
 
 export default function LanguageSettings() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t, setLanguage } = useLanguage();
   const [selectedInterface, setSelectedInterface] = useState(user?.interfaceLanguage || "english");
   const [selectedNative, setSelectedNative] = useState(user?.nativeLanguage || "english");
 
@@ -37,6 +39,9 @@ export default function LanguageSettings() {
   });
 
   const handleSaveSettings = () => {
+    // Update context immediately for better UX
+    setLanguage(selectedInterface as any);
+    
     updateLanguageSettingsMutation.mutate({
       interfaceLanguage: selectedInterface,
       nativeLanguage: selectedNative,
@@ -94,8 +99,8 @@ export default function LanguageSettings() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Language & Region</h1>
-            <p className="text-muted-foreground">Choose your preferred languages</p>
+            <h1 className="text-3xl font-bold text-foreground">{t('languageSettings.title')}</h1>
+            <p className="text-muted-foreground">{t('languageSettings.description')}</p>
           </div>
         </div>
 
@@ -107,8 +112,8 @@ export default function LanguageSettings() {
                 <Languages className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Interface Language</h3>
-                <p className="text-sm text-muted-foreground">Language for menus, buttons, and interface</p>
+                <h3 className="font-semibold text-lg">{t('languageSettings.interfaceLanguage')}</h3>
+                <p className="text-sm text-muted-foreground">{t('languageSettings.interfaceDescription')}</p>
               </div>
             </div>
 
@@ -155,8 +160,8 @@ export default function LanguageSettings() {
                 <Globe className="w-5 h-5 text-secondary" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Native Language</h3>
-                <p className="text-sm text-muted-foreground">Your mother tongue for personalized learning</p>
+                <h3 className="font-semibold text-lg">{t('languageSettings.nativeLanguage')}</h3>
+                <p className="text-sm text-muted-foreground">{t('languageSettings.nativeDescription')}</p>
               </div>
             </div>
 
@@ -198,7 +203,7 @@ export default function LanguageSettings() {
 
           {/* Learning Preferences */}
           <Card className="p-6 bg-muted/50">
-            <h4 className="font-semibold mb-3">Learning Optimization</h4>
+            <h4 className="font-semibold mb-3">{t('languageSettings.learningOptimization')}</h4>
             <div className="text-sm text-muted-foreground space-y-2">
               <p>• Lessons will be optimized for {selectedNative === "arabic" ? "Arabic" : "English"} speakers</p>
               <p>• Translation hints will appear in your native language</p>
@@ -212,8 +217,8 @@ export default function LanguageSettings() {
             <div className="sticky bottom-6 bg-background/80 backdrop-blur-sm rounded-lg p-4 border">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium">Unsaved Changes</p>
-                  <p className="text-sm text-muted-foreground">Save your language preferences</p>
+                  <p className="font-medium">{t('languageSettings.unsavedChanges')}</p>
+                  <p className="text-sm text-muted-foreground">{t('languageSettings.savePreferences')}</p>
                 </div>
                 <div className="flex gap-2">
                   <Button 
@@ -223,14 +228,14 @@ export default function LanguageSettings() {
                       setSelectedNative(user?.nativeLanguage || "english");
                     }}
                   >
-                    Reset
+                    {t('languageSettings.reset')}
                   </Button>
                   <Button 
                     onClick={handleSaveSettings}
                     disabled={updateLanguageSettingsMutation.isPending}
                     data-testid="button-save-language-settings"
                   >
-                    {updateLanguageSettingsMutation.isPending ? "Saving..." : "Save Changes"}
+                    {updateLanguageSettingsMutation.isPending ? t('languageSettings.saving') : t('languageSettings.saveChanges')}
                   </Button>
                 </div>
               </div>

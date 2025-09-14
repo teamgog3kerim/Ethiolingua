@@ -9,6 +9,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useTheme } from "@/contexts/ThemeContext";
 import { 
   Moon, 
   Sun, 
@@ -24,6 +26,8 @@ import {
 export default function Settings() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t, currentLanguage } = useLanguage();
+  const { theme, setTheme } = useTheme();
 
   const updateSettingsMutation = useMutation({
     mutationFn: async (updates: any) => {
@@ -45,30 +49,14 @@ export default function Settings() {
     },
   });
 
-  const handleThemeChange = (theme: string) => {
-    updateSettingsMutation.mutate({ theme });
-    // Apply theme immediately to DOM
-    const root = document.documentElement;
-    if (theme === "dark") {
-      root.classList.add("dark");
-    } else if (theme === "light") {
-      root.classList.remove("dark");
-    } else {
-      // Default/system theme
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      if (prefersDark) {
-        root.classList.add("dark");
-      } else {
-        root.classList.remove("dark");
-      }
-    }
+  const handleThemeChange = (newTheme: string) => {
+    setTheme(newTheme as any);
+    updateSettingsMutation.mutate({ theme: newTheme });
   };
 
   const handleAlwaysLoggedInToggle = (enabled: boolean) => {
     updateSettingsMutation.mutate({ alwaysLoggedIn: enabled });
   };
-
-  const currentTheme = user?.theme || "default";
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -81,8 +69,8 @@ export default function Settings() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Settings</h1>
-            <p className="text-muted-foreground">Manage your account preferences</p>
+            <h1 className="text-3xl font-bold text-foreground">{t('settings.title')}</h1>
+            <p className="text-muted-foreground">{t('settings.description')}</p>
           </div>
         </div>
 
@@ -94,17 +82,17 @@ export default function Settings() {
                 <Monitor className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Appearance</h3>
-                <p className="text-sm text-muted-foreground">Customize how the app looks</p>
+                <h3 className="font-semibold text-lg">{t('settings.appearance')}</h3>
+                <p className="text-sm text-muted-foreground">{t('settings.appearanceDescription')}</p>
               </div>
             </div>
             
             <div className="space-y-4">
               <div>
-                <Label htmlFor="theme-select" className="text-base font-medium">Theme</Label>
-                <p className="text-sm text-muted-foreground mb-3">Choose your preferred color scheme</p>
+                <Label htmlFor="theme-select" className="text-base font-medium">{t('settings.theme')}</Label>
+                <p className="text-sm text-muted-foreground mb-3">{t('settings.themeDescription')}</p>
                 <Select 
-                  value={currentTheme} 
+                  value={theme} 
                   onValueChange={handleThemeChange}
                   disabled={updateSettingsMutation.isPending}
                 >
@@ -114,15 +102,15 @@ export default function Settings() {
                   <SelectContent>
                     <SelectItem value="default" className="flex items-center gap-2">
                       <Monitor className="w-4 h-4" />
-                      <span>System Default</span>
+                      <span>{t('settings.systemDefault')}</span>
                     </SelectItem>
                     <SelectItem value="light" className="flex items-center gap-2">
                       <Sun className="w-4 h-4" />
-                      <span>Light Mode</span>
+                      <span>{t('settings.lightMode')}</span>
                     </SelectItem>
                     <SelectItem value="dark" className="flex items-center gap-2">
                       <Moon className="w-4 h-4" />
-                      <span>Dark Mode</span>
+                      <span>{t('settings.darkMode')}</span>
                     </SelectItem>
                   </SelectContent>
                 </Select>
@@ -139,10 +127,10 @@ export default function Settings() {
                     <Languages className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg">Language & Region</h3>
+                    <h3 className="font-semibold text-lg">{t('settings.languageRegion')}</h3>
                     <p className="text-sm text-muted-foreground">
-                      Interface language: {user?.interfaceLanguage === "arabic" ? "العربية" : 
-                                         user?.interfaceLanguage === "amharic" ? "አማርኛ" : "English"}
+                      {t('settings.interfaceDescription')}{currentLanguage === "arabic" ? "العربية" : 
+                                         currentLanguage === "amharic" ? "አማርኛ" : "English"}
                     </p>
                   </div>
                 </div>
@@ -158,16 +146,16 @@ export default function Settings() {
                 <User className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Account</h3>
-                <p className="text-sm text-muted-foreground">Manage your account settings</p>
+                <h3 className="font-semibold text-lg">{t('settings.account')}</h3>
+                <p className="text-sm text-muted-foreground">{t('settings.accountDescription')}</p>
               </div>
             </div>
 
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <Label htmlFor="always-logged-in" className="text-base font-medium">Stay Logged In</Label>
-                  <p className="text-sm text-muted-foreground">Keep me signed in across sessions</p>
+                  <Label htmlFor="always-logged-in" className="text-base font-medium">{t('settings.stayLoggedIn')}</Label>
+                  <p className="text-sm text-muted-foreground">{t('settings.stayLoggedInDescription')}</p>
                 </div>
                 <Switch
                   id="always-logged-in"
@@ -187,8 +175,8 @@ export default function Settings() {
                 <Shield className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Privacy & Security</h3>
-                <p className="text-sm text-muted-foreground">Control your privacy and security</p>
+                <h3 className="font-semibold text-lg">{t('settings.privacy')}</h3>
+                <p className="text-sm text-muted-foreground">{t('settings.privacyDescription')}</p>
               </div>
             </div>
 
@@ -212,23 +200,23 @@ export default function Settings() {
                 <Bell className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg">Notifications</h3>
-                <p className="text-sm text-muted-foreground">Manage your notification preferences</p>
+                <h3 className="font-semibold text-lg">{t('settings.notifications')}</h3>
+                <p className="text-sm text-muted-foreground">{t('settings.notificationsDescription')}</p>
               </div>
             </div>
 
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="text-base font-medium">Study Reminders</Label>
-                  <p className="text-sm text-muted-foreground">Get reminded to practice daily</p>
+                  <Label className="text-base font-medium">{t('settings.studyReminders')}</Label>
+                  <p className="text-sm text-muted-foreground">{t('settings.studyRemindersDescription')}</p>
                 </div>
                 <Switch defaultChecked />
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="text-base font-medium">Progress Updates</Label>
-                  <p className="text-sm text-muted-foreground">Weekly progress summaries</p>
+                  <Label className="text-base font-medium">{t('settings.progressUpdates')}</Label>
+                  <p className="text-sm text-muted-foreground">{t('settings.progressUpdatesDescription')}</p>
                 </div>
                 <Switch defaultChecked />
               </div>
