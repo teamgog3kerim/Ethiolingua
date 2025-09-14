@@ -26,7 +26,21 @@ import { eq, and, desc, sql } from "drizzle-orm";
 export interface IStorage {
   // User operations (required for Replit Auth)
   getUser(id: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
+  updateUser(userId: string, updates: Partial<UpsertUser>): Promise<User>;
+  createLocalUser(userData: {
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    age?: number;
+    sex?: string;
+    country?: string;
+    profession?: string;
+    nativeLanguage: string;
+    alwaysLoggedIn?: boolean;
+  }): Promise<User>;
   updateSubscriptionStatus(userId: string, status: string): Promise<User>;
   
   // Lesson operations
@@ -73,14 +87,52 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
-  async upsertUser(userData: UpsertUser): Promise<User> {
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user;
+  }
+
+  async createLocalUser(userData: {
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    age?: number;
+    sex?: string;
+    country?: string;
+    profession?: string;
+    nativeLanguage: string;
+    alwaysLoggedIn?: boolean;
+  }): Promise<User> {
     const [user] = await db
       .insert(users)
-      .values(userData)
+      .values({
+        email: userData.email,
+        password: userData.password,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        age: userData.age,
+        sex: userData.sex,
+        country: userData.country,
+        profession: userData.profession,
+        nativeLanguage: userData.nativeLanguage,
+        alwaysLoggedIn: userData.alwaysLoggedIn,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .returning();
+    return user;
+  }
+
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const { id, ...rest } = userData as any;
+    const [user] = await db
+      .insert(users)
+      .values({ id, ...rest })
       .onConflictDoUpdate({
         target: users.id,
         set: {
-          ...userData,
+          ...rest,
           updatedAt: new Date(),
         },
       })
@@ -88,6 +140,17 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
+  async updateUser(userId: string, updates: Partial<UpsertUser>): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({
+        ...updates,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, userId))
+      .returning();
+    return user;
+  }
 
   async updateSubscriptionStatus(userId: string, status: string): Promise<User> {
     const [user] = await db

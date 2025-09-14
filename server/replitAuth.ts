@@ -7,6 +7,7 @@ import type { Express, RequestHandler } from "express";
 import memoize from "memoizee";
 import connectPg from "connect-pg-simple";
 import { storage } from "./storage";
+import { setupLocalAuth } from "./localAuth";
 
 if (!process.env.REPLIT_DOMAINS) {
   throw new Error("Environment variable REPLIT_DOMAINS not provided");
@@ -57,13 +58,31 @@ function updateUserSession(
 async function upsertUser(
   claims: any,
 ) {
-  await storage.upsertUser({
-    id: claims["sub"],
-    email: claims["email"],
-    firstName: claims["first_name"],
-    lastName: claims["last_name"],
-    profileImageUrl: claims["profile_image_url"],
-  });
+  const email = claims["email"];
+  const oidcId = claims["sub"];
+  
+  // Check if a user already exists with this email (could be a local account)
+  const existingUser = await storage.getUserByEmail(email);
+  
+  if (existingUser) {
+    // Update the existing user with OIDC profile data, keeping their original ID
+    const updatedUser = await storage.updateUser(existingUser.id, {
+      firstName: claims["first_name"],
+      lastName: claims["last_name"], 
+      profileImageUrl: claims["profile_image_url"],
+    });
+    return updatedUser;
+  } else {
+    // No existing user, create new one with OIDC ID
+    const newUser = await storage.upsertUser({
+      id: oidcId,
+      email: email,
+      firstName: claims["first_name"],
+      lastName: claims["last_name"],
+      profileImageUrl: claims["profile_image_url"],
+    });
+    return newUser;
+  }
 }
 
 export async function setupAuth(app: Express) {
@@ -71,6 +90,9 @@ export async function setupAuth(app: Express) {
   app.use(getSession());
   app.use(passport.initialize());
   app.use(passport.session());
+
+  // Setup local authentication (email/password)
+  await setupLocalAuth(app);
 
   const config = await getOidcConfig();
 
@@ -80,7 +102,14 @@ export async function setupAuth(app: Express) {
   ) => {
     const user = {};
     updateUserSession(user, tokens);
-    await upsertUser(tokens.claims());
+    
+    // Get the actual database user to ensure we use the correct ID
+    const dbUser = await upsertUser(tokens.claims());
+    
+    // Update the claims to use the database user ID instead of the OIDC subject ID
+    // This ensures that routes using req.user.claims.sub will find the correct user
+    (user as any).claims.sub = dbUser.id;
+    
     verified(null, user);
   };
 
@@ -130,10 +159,16 @@ export async function setupAuth(app: Express) {
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
   const user = req.user as any;
 
-  if (!req.isAuthenticated() || !user.expires_at) {
+  if (!req.isAuthenticated()) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
+  // Local auth users have expires_at = null, they don't need token refresh
+  if (!user.expires_at) {
+    return next();
+  }
+
+  // OIDC users need token expiration/refresh logic
   const now = Math.floor(Date.now() / 1000);
   if (now <= user.expires_at) {
     return next();

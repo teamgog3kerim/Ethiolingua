@@ -21,6 +21,8 @@ import PronunciationPractice from "@/pages/PronunciationPractice";
 import Tutors from "@/pages/Tutors";
 import Settings from "@/pages/Settings";
 import LanguageSettings from "@/pages/LanguageSettings";
+import Register from "@/pages/Register";
+import Login from "@/pages/Login";
 
 function Router() {
   const { isAuthenticated, isLoading, user } = useAuth();
@@ -36,7 +38,11 @@ function Router() {
   return (
     <Switch>
       {!isAuthenticated ? (
-        <Route path="/" component={Landing} />
+        <>
+          <Route path="/register" component={Register} />
+          <Route path="/login" component={Login} />
+          <Route path="/" component={Landing} />
+        </>
       ) : (
         <>
           {!user?.nativeLanguage ? (

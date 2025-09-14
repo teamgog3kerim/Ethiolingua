@@ -197,7 +197,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (alwaysLoggedIn !== undefined) updates.alwaysLoggedIn = alwaysLoggedIn;
 
       // Update user with new settings
-      const user = await storage.upsertUser(updates);
+      const user = await storage.updateUser(userId, updates);
       res.json(user);
     } catch (error) {
       console.error("Error updating user settings:", error);
