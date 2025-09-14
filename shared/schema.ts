@@ -28,10 +28,18 @@ export const sessions = pgTable(
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   email: varchar("email").unique(),
+  password: varchar("password"), // for email/password authentication
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
-  nativeLanguage: varchar("native_language").notNull().default("english"), // english, arabic
+  age: integer("age"),
+  sex: varchar("sex"), // male, female, other, prefer_not_to_say
+  country: varchar("country"),
+  profession: varchar("profession"),
+  nativeLanguage: varchar("native_language").notNull().default("english"), // english, arabic, amharic
+  interfaceLanguage: varchar("interface_language").notNull().default("english"), // english, arabic, amharic
+  theme: varchar("theme").default("default"), // light, dark, default
+  alwaysLoggedIn: boolean("always_logged_in").default(false),
   stripeCustomerId: varchar("stripe_customer_id"),
   stripeSubscriptionId: varchar("stripe_subscription_id"),
   subscriptionStatus: varchar("subscription_status").default("trial"), // trial, active, canceled, expired

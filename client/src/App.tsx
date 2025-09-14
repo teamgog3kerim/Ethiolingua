@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
+import AppLayout from "@/components/AppLayout";
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/Landing";
 import Home from "@/pages/Home";
@@ -37,17 +38,19 @@ function Router() {
           {!user?.nativeLanguage ? (
             <Route path="/" component={Onboarding} />
           ) : (
-            <>
-              <Route path="/" component={Home} />
-              <Route path="/lesson/:id" component={Lesson} />
-              <Route path="/quiz/:id" component={Quiz} />
-              <Route path="/tutor" component={AITutor} />
-              <Route path="/subscription" component={Subscription} />
-              <Route path="/progress" component={Progress} />
-              <Route path="/admin" component={Admin} />
-              <Route path="/pronunciation/:id" component={PronunciationPractice} />
-              <Route path="/tutors" component={Tutors} />
-            </>
+            <AppLayout>
+              <Switch>
+                <Route path="/" component={Home} />
+                <Route path="/lesson/:id" component={Lesson} />
+                <Route path="/quiz/:id" component={Quiz} />
+                <Route path="/tutor" component={AITutor} />
+                <Route path="/subscription" component={Subscription} />
+                <Route path="/progress" component={Progress} />
+                <Route path="/admin" component={Admin} />
+                <Route path="/pronunciation/:id" component={PronunciationPractice} />
+                <Route path="/tutors" component={Tutors} />
+              </Switch>
+            </AppLayout>
           )}
         </>
       )}
