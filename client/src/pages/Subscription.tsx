@@ -231,20 +231,14 @@ export default function Subscription() {
 
         {/* Payment Methods */}
         <Card className="bg-muted/50 rounded-2xl p-6 mb-8">
-          <h3 className="font-bold text-foreground mb-4 text-center">Secure Cryptocurrency Payment</h3>
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <div className="w-12 h-12 bg-yellow-600 rounded-xl flex items-center justify-center">
-              <i className="fab fa-bitcoin text-white text-xl"></i>
+          <h3 className="font-bold text-foreground mb-4 text-center">Secure USDT Payment</h3>
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <div className="w-16 h-16 bg-green-600 rounded-xl flex items-center justify-center">
+              <span className="text-white font-bold text-sm">USDT</span>
             </div>
-            <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold text-xs">BNB</span>
-            </div>
-            <div className="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold text-xs">USDT</span>
-            </div>
-            <div className="text-muted-foreground">+ more</div>
+            <span className="text-sm text-muted-foreground ml-2">Tether (USDT) only</span>
           </div>
-          <p className="text-sm text-center text-muted-foreground">Fast, secure, and low-fee crypto payments via Binance Pay</p>
+          <p className="text-sm text-center text-muted-foreground">Fast, secure, and stable USDT payments via Binance Pay</p>
         </Card>
 
         {/* FAQs */}
