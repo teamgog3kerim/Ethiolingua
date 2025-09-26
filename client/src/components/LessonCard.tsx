@@ -57,15 +57,15 @@ export function LessonCard({ lesson }: LessonCardProps) {
         </div>
         
         {/* Language Preview (Blurred) */}
-        <div className="mb-4 p-3 bg-muted/20 rounded-xl border border-muted-foreground/10">
-          <div className="flex items-center justify-center gap-4 opacity-40 blur-sm">
-            <div className="text-center">
-              <div className="amharic-text text-3xl font-bold text-primary mb-1">{amharicChar}</div>
+        <div className="mb-4 p-3 bg-muted/20 rounded-xl border border-muted-foreground/10 card-text-container">
+          <div className="flex items-center justify-center gap-2 sm:gap-4 opacity-40 blur-sm">
+            <div className="text-center flex-1 min-w-0">
+              <div className="char-display-amharic text-primary mb-1 px-1">{amharicChar}</div>
               <p className="text-xs text-muted-foreground">Amharic</p>
             </div>
-            <div className="text-muted-foreground">↔</div>
-            <div className="text-center">
-              <div className="text-xl font-semibold text-foreground mb-1">{englishChar}</div>
+            <div className="text-muted-foreground flex-shrink-0">↔</div>
+            <div className="text-center flex-1 min-w-0">
+              <div className="char-display-standard text-foreground mb-1 px-1">{englishChar}</div>
               <p className="text-xs text-muted-foreground">English</p>
             </div>
           </div>
@@ -122,34 +122,34 @@ export function LessonCard({ lesson }: LessonCardProps) {
         </div>
         
         {/* Language Comparison Section */}
-        <div className="mb-5 p-4 bg-gradient-to-r from-primary/5 via-secondary/5 to-accent/5 rounded-xl border border-primary/10 group-hover:border-primary/20 transition-all duration-300">
-          <div className="flex items-center justify-between gap-4">
+        <div className="mb-5 p-3 sm:p-4 bg-gradient-to-r from-primary/5 via-secondary/5 to-accent/5 rounded-xl border border-primary/10 group-hover:border-primary/20 transition-all duration-300 card-text-container">
+          <div className="flex items-center justify-between gap-2 sm:gap-4">
             {/* Amharic */}
-            <div className="text-center flex-1">
-              <div className="amharic-text text-4xl font-bold text-primary mb-2 group-hover:scale-110 transition-transform duration-300">
+            <div className="text-center flex-1 min-w-0">
+              <div className="char-display-amharic text-primary mb-1 sm:mb-2 group-hover:scale-110 transition-transform duration-300 px-1">
                 {amharicChar}
               </div>
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Amharic</p>
             </div>
             
             {/* Separator */}
-            <div className="flex flex-col items-center gap-1">
-              <div className="w-6 h-px bg-gradient-to-r from-primary to-secondary" />
+            <div className="flex flex-col items-center gap-1 flex-shrink-0">
+              <div className="w-4 sm:w-6 h-px bg-gradient-to-r from-primary to-secondary" />
               <div className="text-xs text-muted-foreground font-medium">means</div>
-              <div className="w-6 h-px bg-gradient-to-r from-secondary to-accent" />
+              <div className="w-4 sm:w-6 h-px bg-gradient-to-r from-secondary to-accent" />
             </div>
             
             {/* English */}
-            <div className="text-center flex-1">
-              <div className="text-2xl font-bold text-foreground mb-2 group-hover:scale-110 transition-transform duration-300">
+            <div className="text-center flex-1 min-w-0">
+              <div className="char-display-standard text-foreground mb-1 sm:mb-2 group-hover:scale-110 transition-transform duration-300 px-1">
                 {englishChar}
               </div>
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">English</p>
             </div>
             
             {/* Arabic (RTL support) */}
-            <div className="text-center flex-1">
-              <div className="text-2xl font-bold text-foreground mb-2 group-hover:scale-110 transition-transform duration-300" dir="rtl">
+            <div className="text-center flex-1 min-w-0">
+              <div className="char-display-standard text-foreground mb-1 sm:mb-2 group-hover:scale-110 transition-transform duration-300 px-1" dir="rtl">
                 {arabicChar}
               </div>
               <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Arabic</p>
