@@ -135,23 +135,31 @@
     repeating-linear-gradient(
       0deg,
       transparent,
-      transparent 30px,
-      rgba(255, 255, 255, 0.05) 30px,
-      rgba(255, 255, 255, 0.05) 32px
+      transparent 25px,
+      rgba(255, 255, 255, 0.15) 25px,
+      rgba(255, 255, 255, 0.15) 27px
     ),
     repeating-linear-gradient(
       90deg,
       transparent,
-      transparent 30px,
-      rgba(255, 255, 255, 0.05) 30px,
-      rgba(255, 255, 255, 0.05) 32px
+      transparent 25px,
+      rgba(255, 255, 255, 0.15) 25px,
+      rgba(255, 255, 255, 0.15) 27px
     ),
     /* Ethiopian geometric dots */
-    radial-gradient(circle at 15px 15px, rgba(255, 215, 0, 0.1) 2px, transparent 2px),
-    radial-gradient(circle at 45px 45px, rgba(34, 139, 34, 0.08) 3px, transparent 3px),
-    radial-gradient(circle at 75px 15px, rgba(220, 20, 60, 0.06) 2px, transparent 2px);
-  background-size: 60px 60px, 60px 60px, 30px 30px, 60px 60px, 30px 30px;
-  background-position: 0 0, 0 0, 0 0, 30px 30px, 15px 0;
+    radial-gradient(circle at 12px 12px, rgba(255, 215, 0, 0.25) 3px, transparent 3px),
+    radial-gradient(circle at 37px 37px, rgba(34, 139, 34, 0.2) 4px, transparent 4px),
+    radial-gradient(circle at 62px 12px, rgba(220, 20, 60, 0.15) 3px, transparent 3px),
+    /* Additional diamond pattern */
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 15px,
+      rgba(255, 255, 255, 0.08) 15px,
+      rgba(255, 255, 255, 0.08) 17px
+    );
+  background-size: 50px 50px, 50px 50px, 25px 25px, 50px 50px, 25px 25px, 30px 30px;
+  background-position: 0 0, 0 0, 0 0, 25px 25px, 12px 0, 15px 15px;
 }
 
 /* Ethiopian inspired geometric patterns */
