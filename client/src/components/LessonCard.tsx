@@ -130,45 +130,45 @@ export function LessonCard({ lesson }: LessonCardProps) {
           </div>
         </div>
         
-        {/* Language Comparison Section */}
-        <div className="mb-5 p-3 sm:p-4 bg-gradient-to-r from-primary/5 via-secondary/5 to-accent/5 rounded-xl border border-primary/10 group-hover:border-primary/20 transition-all duration-300">
-          <div className="flex items-center w-full">
-            {/* Amharic - Left */}
-            <div className="language-section">
-              <div className="char-display-amharic text-primary mb-1 sm:mb-2 group-hover:scale-105 transition-transform duration-300 text-center w-full">
+        {/* Language Comparison Section - Vertical Layout */}
+        <div className="mb-5 p-4 sm:p-6 bg-gradient-to-b from-primary/5 via-secondary/5 to-accent/5 rounded-xl border border-primary/10 group-hover:border-primary/20 transition-all duration-300">
+          <div className="flex flex-col w-full">
+            {/* Amharic - Top */}
+            <div className="language-section-vertical">
+              <div className="char-display-amharic text-primary mb-2 group-hover:scale-105 transition-transform duration-300 formal-text">
                 {amharicChar}
               </div>
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide text-center">Amharic</p>
+              <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Amharic</p>
             </div>
             
             {/* Separator */}
-            <div className="language-separator">
-              <div className="w-3 sm:w-4 h-px bg-gradient-to-r from-primary to-secondary mb-1" />
-              <div className="text-xs text-muted-foreground font-medium">means</div>
-              <div className="w-3 sm:w-4 h-px bg-gradient-to-r from-secondary to-accent mt-1" />
+            <div className="language-separator-vertical">
+              <div className="w-8 h-px bg-gradient-to-r from-primary to-secondary" />
+              <div className="text-sm text-muted-foreground font-medium px-2">means</div>
+              <div className="w-8 h-px bg-gradient-to-r from-secondary to-accent" />
             </div>
             
-            {/* English - Middle */}
-            <div className="language-section">
-              <div className="char-display-standard text-foreground mb-1 sm:mb-2 group-hover:scale-105 transition-transform duration-300 text-center w-full">
-                {englishChar}
-              </div>
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide text-center">English</p>
-            </div>
-            
-            {/* Separator */}
-            <div className="language-separator">
-              <div className="w-3 sm:w-4 h-px bg-gradient-to-r from-primary to-secondary mb-1" />
-              <div className="text-xs text-muted-foreground font-medium">means</div>
-              <div className="w-3 sm:w-4 h-px bg-gradient-to-r from-secondary to-accent mt-1" />
-            </div>
-            
-            {/* Arabic - Right (RTL support) */}
-            <div className="language-section">
-              <div className="char-display-standard text-foreground mb-1 sm:mb-2 group-hover:scale-105 transition-transform duration-300 text-center w-full" dir="rtl">
+            {/* Arabic - Middle (RTL support) */}
+            <div className="language-section-vertical">
+              <div className="char-display-standard text-foreground mb-2 group-hover:scale-105 transition-transform duration-300 formal-text" dir="rtl">
                 {arabicChar}
               </div>
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide text-center">Arabic</p>
+              <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Arabic</p>
+            </div>
+            
+            {/* Separator */}
+            <div className="language-separator-vertical">
+              <div className="w-8 h-px bg-gradient-to-r from-primary to-secondary" />
+              <div className="text-sm text-muted-foreground font-medium px-2">means</div>
+              <div className="w-8 h-px bg-gradient-to-r from-secondary to-accent" />
+            </div>
+            
+            {/* English - Bottom */}
+            <div className="language-section-vertical">
+              <div className="char-display-standard text-foreground mb-2 group-hover:scale-105 transition-transform duration-300 formal-text">
+                {englishChar}
+              </div>
+              <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">English</p>
             </div>
           </div>
         </div>
