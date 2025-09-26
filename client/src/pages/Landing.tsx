@@ -34,7 +34,7 @@ export default function Landing() {
   return (
     <div className="min-h-screen gradient-primary flex items-center justify-center relative overflow-hidden">
       {/* Ethiopian cultural pattern background */}
-      <div className="absolute inset-0 opacity-10 pattern-bg" />
+      <div className="absolute inset-0 opacity-15 pattern-bg" />
       
       <div className="text-center z-10 px-4 sm:px-6 lg:px-8 max-w-xs sm:max-w-md lg:max-w-lg xl:max-w-xl mx-auto">
         {/* App Icon/Logo */}

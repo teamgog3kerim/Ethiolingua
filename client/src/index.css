@@ -130,13 +130,28 @@
 
 /* Cultural pattern backgrounds */
 .pattern-bg {
-  background-image: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 20px,
-    rgba(255, 255, 255, 0.1) 20px,
-    rgba(255, 255, 255, 0.1) 40px
-  );
+  background-image: 
+    /* Ethiopian cross pattern */
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 30px,
+      rgba(255, 255, 255, 0.05) 30px,
+      rgba(255, 255, 255, 0.05) 32px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 30px,
+      rgba(255, 255, 255, 0.05) 30px,
+      rgba(255, 255, 255, 0.05) 32px
+    ),
+    /* Ethiopian geometric dots */
+    radial-gradient(circle at 15px 15px, rgba(255, 215, 0, 0.1) 2px, transparent 2px),
+    radial-gradient(circle at 45px 45px, rgba(34, 139, 34, 0.08) 3px, transparent 3px),
+    radial-gradient(circle at 75px 15px, rgba(220, 20, 60, 0.06) 2px, transparent 2px);
+  background-size: 60px 60px, 60px 60px, 30px 30px, 60px 60px, 30px 30px;
+  background-position: 0 0, 0 0, 0 0, 30px 30px, 15px 0;
 }
 
 /* Ethiopian inspired geometric patterns */
