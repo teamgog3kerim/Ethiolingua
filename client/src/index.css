@@ -250,7 +250,7 @@
 
 .char-display-amharic {
   font-family: "Noto Sans Ethiopic", serif;
-  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-size: clamp(1.5rem, 3.5vw, 2.5rem);
   line-height: 1.1;
   font-weight: 700;
   max-width: 100%;
@@ -260,7 +260,7 @@
 }
 
 .char-display-standard {
-  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-size: clamp(1.25rem, 3vw, 2rem);
   line-height: 1.2;
   font-weight: 700;
   max-width: 100%;
