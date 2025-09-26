@@ -47,13 +47,13 @@ export default function Landing() {
           </div>
         </div>
         
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white/95 mb-2 leading-tight" data-testid="title-main">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white/95 mb-4 leading-tight" data-testid="title-main">
           Learn Amharic
         </h1>
-        <p className="text-white/90 text-base sm:text-lg lg:text-xl mb-2">AI-Powered Language Learning</p>
-        <p className="text-white/75 text-sm sm:text-base mb-6 sm:mb-8">For English & Arabic Speakers</p>
+        <p className="text-white/90 text-base sm:text-lg lg:text-xl mb-3">AI-Powered Language Learning</p>
+        <p className="text-white/75 text-sm sm:text-base mb-8">For English & Arabic Speakers</p>
         
-        <div className="space-y-3 sm:space-y-4">
+        <div className="space-y-4 mb-8">
           <Button 
             onClick={handleSignIn}
             className="w-full md:w-auto md:px-12 bg-white text-primary font-semibold py-4 px-6 sm:px-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] h-auto min-h-[3rem]"
@@ -79,7 +79,7 @@ export default function Landing() {
           </Button>
         </div>
         
-        <div className="mt-6 sm:mt-8 grid grid-cols-3 gap-3 sm:gap-4 lg:gap-6 text-white/60 max-w-xs sm:max-w-sm mx-auto">
+        <div className="mt-8 grid grid-cols-3 gap-4 lg:gap-6 text-white/60 max-w-xs sm:max-w-sm mx-auto">
           <div className="text-center" data-testid="stat-learners">
             <Users className="h-5 w-5 sm:h-6 sm:w-6 mb-1 sm:mb-2 mx-auto" aria-hidden="true" />
             <p className="text-xs sm:text-sm font-medium">10K+ Learners</p>
