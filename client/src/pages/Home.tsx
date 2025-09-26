@@ -71,9 +71,9 @@ export default function Home() {
             {/* Right side actions */}
             <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
               {/* Streak indicator */}
-              <div className="flex items-center gap-1 bg-gradient-to-r from-accent/20 to-secondary/20 px-2 sm:px-3 py-1.5 sm:py-2 rounded-full border border-accent/30 shadow-sm hover:shadow-md transition-all duration-200">
-                <i className="fas fa-fire text-accent text-xs sm:text-sm animate-pulse flex-shrink-0"></i>
-                <span className="text-xs sm:text-sm font-bold text-foreground" data-testid="text-streak">
+              <div className="flex items-center gap-1.5 bg-gradient-to-r from-orange-100 to-red-100 dark:from-orange-900/30 dark:to-red-900/30 px-2 sm:px-3 py-1.5 sm:py-2 rounded-full border border-orange-200 dark:border-orange-700 shadow-sm hover:shadow-md transition-all duration-200">
+                <i className="fas fa-fire text-orange-500 text-xs sm:text-sm animate-pulse flex-shrink-0"></i>
+                <span className="text-xs sm:text-sm font-bold text-orange-700 dark:text-orange-300" data-testid="text-streak">
                   {(stats as any)?.currentStreak || 0}
                 </span>
               </div>
