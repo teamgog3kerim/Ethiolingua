@@ -136,8 +136,8 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
         aria-hidden={!isOpen}
       >
         <div className="flex flex-col h-full w-80">
-          {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-border">
+          {/* Fixed Header */}
+          <div className="flex items-center justify-between p-6 border-b border-border flex-shrink-0">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                 <span className="text-primary-foreground font-bold text-sm">አ</span>
@@ -155,74 +155,77 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
             </Button>
           </div>
 
-          {/* User Profile Section */}
-          {isAuthenticated && user && (
-            <Card className="m-4 p-4 bg-gradient-to-br from-primary/10 to-secondary/10 border-primary/20">
-              <div className="flex items-center gap-3 mb-3">
-                <Avatar className="w-12 h-12">
-                  <AvatarImage src={user.profileImageUrl || undefined} alt="Profile" />
-                  <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
-                    {getUserInitials()}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-foreground truncate" data-testid="text-user-name">
-                    {user.firstName && user.lastName 
-                      ? `${user.firstName} ${user.lastName}`
-                      : user.email?.split("@")[0] || "User"
-                    }
-                  </h3>
-                  <p className="text-sm text-muted-foreground truncate" data-testid="text-user-email">
-                    {user.email}
-                  </p>
-                </div>
-              </div>
-              
-              <div className="flex items-center justify-between mb-3">
-                <Badge 
-                  variant={user.subscriptionStatus === "active" ? "default" : "secondary"}
-                  className="text-xs"
-                >
-                  {user.subscriptionStatus === "active" ? "Pro" : "Free Trial"}
-                </Badge>
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Languages className="w-3 h-3" />
-                  <span className="capitalize">{user.nativeLanguage || "English"}</span>
-                </div>
-              </div>
-              
-              {/* Progress Section */}
-              <div className="flex items-center justify-between bg-background/50 rounded-lg p-3">
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs font-medium text-muted-foreground">Daily Progress</span>
-                    <span className="text-xs font-semibold text-foreground">75%</span>
+          {/* Scrollable Content Area */}
+          <div className="flex-1 overflow-y-auto overflow-x-hidden sidebar-scroll scroll-smooth">
+            <div className="min-h-full flex flex-col">
+              {/* User Profile Section */}
+              {isAuthenticated && user && (
+                <Card className="m-4 p-4 bg-gradient-to-br from-primary/10 to-secondary/10 border-primary/20 flex-shrink-0">
+                  <div className="flex items-center gap-3 mb-3">
+                    <Avatar className="w-12 h-12">
+                      <AvatarImage src={user.profileImageUrl || undefined} alt="Profile" />
+                      <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
+                        {getUserInitials()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-foreground truncate" data-testid="text-user-name">
+                        {user.firstName && user.lastName 
+                          ? `${user.firstName} ${user.lastName}`
+                          : user.email?.split("@")[0] || "User"
+                        }
+                      </h3>
+                      <p className="text-sm text-muted-foreground truncate" data-testid="text-user-email">
+                        {user.email}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <ProgressRing 
-                      percentage={75} 
-                      size={40} 
-                      strokeWidth={4}
-                      className="flex-shrink-0"
-                    />
-                    <div className="text-xs space-y-1">
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <span>🎯</span>
-                        <span>12/15 lessons</span>
+                  
+                  <div className="flex items-center justify-between mb-3">
+                    <Badge 
+                      variant={user.subscriptionStatus === "active" ? "default" : "secondary"}
+                      className="text-xs"
+                    >
+                      {user.subscriptionStatus === "active" ? "Pro" : "Free Trial"}
+                    </Badge>
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <Languages className="w-3 h-3" />
+                      <span className="capitalize">{user.nativeLanguage || "English"}</span>
+                    </div>
+                  </div>
+                  
+                  {/* Progress Section */}
+                  <div className="flex items-center justify-between bg-background/50 rounded-lg p-3">
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs font-medium text-muted-foreground">Daily Progress</span>
+                        <span className="text-xs font-semibold text-foreground">75%</span>
                       </div>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <span>🔥</span>
-                        <span>7-day streak</span>
+                      <div className="flex items-center gap-3">
+                        <ProgressRing 
+                          percentage={75} 
+                          size={40} 
+                          strokeWidth={4}
+                          className="flex-shrink-0"
+                        />
+                        <div className="text-xs space-y-1">
+                          <div className="flex items-center gap-2 text-muted-foreground">
+                            <span>🎯</span>
+                            <span>12/15 lessons</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-muted-foreground">
+                            <span>🔥</span>
+                            <span>7-day streak</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </Card>
-          )}
+                </Card>
+              )}
 
-          {/* Navigation Menu */}
-          <nav className="flex-1 px-4 pb-4" role="navigation" aria-label="Primary navigation">
+              {/* Navigation Menu */}
+              <nav className="flex-1 px-4" role="navigation" aria-label="Primary navigation">
             <div className="space-y-2">
               {menuItems.map((item, index) => (
                 <Button
@@ -302,11 +305,13 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
                   <span>Logout</span>
                 </Button>
               </>
-            )}
-          </nav>
+              )}
+              </nav>
+            </div>
+          </div>
 
-          {/* Footer */}
-          <div className="p-4 border-t border-border">
+          {/* Fixed Footer */}
+          <div className="p-4 border-t border-border flex-shrink-0">
             <div className="text-center">
               <p className="text-xs text-muted-foreground mb-2">Learn Amharic v1.0</p>
               <div className="flex items-center justify-center gap-4 text-muted-foreground">
