@@ -94,9 +94,9 @@ export function LessonCard({ lesson }: LessonCardProps) {
         {/* Cultural accent stripe */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-secondary to-accent" />
         
-        {/* Progress indicator */}
+        {/* Completion Badge - shows when lesson is finished */}
         {lesson.completed && (
-          <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-br from-secondary to-accent rounded-full flex items-center justify-center shadow-lg">
+          <div className="absolute top-2 right-2 w-7 h-7 bg-gradient-to-br from-secondary to-accent rounded-full flex items-center justify-center shadow-lg border-2 border-white z-10">
             <CheckCircle2 className="w-4 h-4 text-white" aria-hidden="true" />
           </div>
         )}
