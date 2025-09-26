@@ -300,6 +300,22 @@
   background-color: hsl(var(--muted-foreground));
 }
 
+/* Extra small breakpoint for mobile optimization */
+@media (min-width: 475px) {
+  .xs\:grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+  .xs\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .xs\:col-span-2 {
+    grid-column: span 2 / span 2;
+  }
+  .xs\:flex {
+    display: flex;
+  }
+}
+
 /* Vertical layout containers for proper spacing */
 .language-section-vertical {
   width: 100%;
