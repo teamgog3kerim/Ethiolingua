@@ -43,8 +43,8 @@ export default function Home() {
     );
   }
 
-  const freeLessons = lessons?.slice(0, 5) || [];
-  const lockedLessons = lessons?.slice(5, 8) || [];
+  const freeLessons = Array.isArray(lessons) ? lessons.slice(0, 5) : [];
+  const lockedLessons = Array.isArray(lessons) ? lessons.slice(5, 8) : [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -71,7 +71,7 @@ export default function Home() {
             <div className="flex items-center gap-1 bg-gradient-to-r from-accent/20 to-secondary/20 px-3 py-2 rounded-full border border-accent/30 shadow-sm hover:shadow-md transition-all duration-200">
               <i className="fas fa-fire text-accent text-sm animate-pulse"></i>
               <span className="text-sm font-bold text-foreground" data-testid="text-streak">
-                {stats?.currentStreak || 0}
+                {(stats as any)?.currentStreak || 0}
               </span>
             </div>
             
@@ -101,7 +101,7 @@ export default function Home() {
                 </div>
                 <div className="text-right">
                   <p className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent" data-testid="text-completed-lessons">
-                    {stats?.completedLessons || 0}
+                    {(stats as any)?.completedLessons || 0}
                   </p>
                   <p className="text-sm font-medium text-muted-foreground">Lessons</p>
                 </div>
@@ -109,12 +109,12 @@ export default function Home() {
               <div className="flex-1 h-3 bg-muted rounded-full overflow-hidden mb-3 shadow-inner">
                 <div 
                   className="h-full bg-gradient-to-r from-primary to-secondary transition-all duration-700 ease-out" 
-                  style={{ width: `${Math.min(((stats?.completedLessons || 0) / 20) * 100, 100)}%` }}
+                  style={{ width: `${Math.min((((stats as any)?.completedLessons || 0) / 20) * 100, 100)}%` }}
                 ></div>
               </div>
               <p className="text-xs font-medium text-muted-foreground flex items-center gap-1">
                 <i className="fas fa-target text-primary text-xs"></i>
-                {stats?.completedLessons || 0}/20 Beginner Level
+                {(stats as any)?.completedLessons || 0}/20 Beginner Level
               </p>
             </Card>
             
@@ -126,7 +126,7 @@ export default function Home() {
                 </div>
                 <div className="text-right">
                   <p className="text-3xl font-bold bg-gradient-to-r from-accent to-orange-500 bg-clip-text text-transparent" data-testid="text-study-time">
-                    {((stats?.totalTimeMinutes || 0) / 60).toFixed(1)}
+                    {(((stats as any)?.totalTimeMinutes || 0) / 60).toFixed(1)}
                   </p>
                   <p className="text-sm font-medium text-muted-foreground">Hours</p>
                 </div>
@@ -145,7 +145,7 @@ export default function Home() {
                 </div>
                 <div className="text-right">
                   <p className="text-3xl font-bold bg-gradient-to-r from-secondary to-purple-500 bg-clip-text text-transparent" data-testid="text-accuracy">
-                    {Math.round(stats?.averageScore || 0)}
+                    {Math.round((stats as any)?.averageScore || 0)}
                   </p>
                   <p className="text-sm font-medium text-muted-foreground">% Accuracy</p>
                 </div>
@@ -175,26 +175,8 @@ export default function Home() {
               <LessonCard key={lesson.id} lesson={lesson} />
             ))}
             
-            {lockedLessons.map((lesson: any, index: number) => (
-              <Card key={lesson.id} className="bg-muted/50 border border-border rounded-2xl p-4 transition-all duration-300 cursor-pointer opacity-60">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-foreground mb-1">{lesson.title}</h3>
-                    <p className="text-sm text-muted-foreground">Pro only</p>
-                  </div>
-                  <div className="w-8 h-8 border-2 border-muted-foreground/30 rounded-full flex items-center justify-center">
-                    <i className="fas fa-lock text-muted-foreground text-sm"></i>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-muted-foreground">Pro only</span>
-                  <Link href="/subscription">
-                    <Button size="sm" className="bg-secondary text-secondary-foreground px-2 py-1 rounded-full font-medium text-xs">
-                      Unlock
-                    </Button>
-                  </Link>
-                </div>
-              </Card>
+            {lockedLessons.map((lesson: any) => (
+              <LessonCard key={lesson.id} lesson={{...lesson, canAccess: false, isPremium: true}} />
             ))}
           </div>
         </div>
