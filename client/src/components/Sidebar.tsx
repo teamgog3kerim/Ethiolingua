@@ -271,6 +271,7 @@ export default function Sidebar({ isOpen, onToggle }: SidebarProps) {
                   <span>Language</span>
                   <Badge variant="outline" className="ml-auto text-xs">
                     {user?.interfaceLanguage === "arabic" ? "العربية" : 
+                     user?.interfaceLanguage === "chinese" ? "中文" :
                      user?.interfaceLanguage === "amharic" ? "አማርኛ" : "English"}
                   </Badge>
                 </Link>

@@ -11,11 +11,11 @@ export default function Landing() {
     // Set meta description
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Learn Amharic with AI-powered lessons designed for English and Arabic speakers. Start your free trial with 5 lessons and join 10,000+ learners mastering Ethiopian language.');
+      metaDescription.setAttribute('content', 'Learn Amharic with AI-powered lessons designed for English, Arabic, and Chinese speakers. Start your free trial with 5 lessons and join 10,000+ learners mastering Ethiopian language.');
     } else {
       const meta = document.createElement('meta');
       meta.name = 'description';
-      meta.content = 'Learn Amharic with AI-powered lessons designed for English and Arabic speakers. Start your free trial with 5 lessons and join 10,000+ learners mastering Ethiopian language.';
+      meta.content = 'Learn Amharic with AI-powered lessons designed for English, Arabic, and Chinese speakers. Start your free trial with 5 lessons and join 10,000+ learners mastering Ethiopian language.';
       document.head.appendChild(meta);
     }
 
@@ -51,7 +51,7 @@ export default function Landing() {
           Learn Amharic
         </h1>
         <p className="text-white/90 text-base sm:text-lg lg:text-xl mb-3">AI-Powered Language Learning</p>
-        <p className="text-white/75 text-sm sm:text-base mb-8">For English & Arabic Speakers</p>
+        <p className="text-white/75 text-sm sm:text-base mb-8">For English, Arabic & Chinese Speakers</p>
         
         <div className="space-y-4 mb-8">
           <Button 
@@ -90,7 +90,7 @@ export default function Landing() {
           </div>
           <div className="text-center" data-testid="stat-languages">
             <Globe className="h-5 w-5 sm:h-6 sm:w-6 mb-1 sm:mb-2 mx-auto" aria-hidden="true" />
-            <p className="text-xs sm:text-sm font-medium">2 Languages</p>
+            <p className="text-xs sm:text-sm font-medium">3 Languages</p>
           </div>
         </div>
       </div>

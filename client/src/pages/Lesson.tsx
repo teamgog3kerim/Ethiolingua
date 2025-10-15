@@ -61,9 +61,17 @@ export default function Lesson() {
     );
   }
 
-  const amharicChar = lesson.content?.amharic?.[0] || "አ";
-  const englishChar = lesson.content?.english?.[0] || "A";
-  const arabicChar = lesson.content?.arabic?.[0] || "أ";
+  const amharicTerms = lesson.content?.amharic || ["አ"];
+  const chineseTerms = lesson.content?.chinese || ["A"];
+  const arabicTerms = lesson.content?.arabic || ["أ"];
+  const englishTerms = lesson.content?.english || ["A"];
+  
+  const maxTerms = Math.max(
+    amharicTerms.length,
+    chineseTerms.length,
+    arabicTerms.length,
+    englishTerms.length
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -106,35 +114,45 @@ export default function Lesson() {
           <p className="text-muted-foreground">Practice pronunciation and recognition</p>
         </div>
         
-        {/* Character Display */}
-        <Card className="border border-border rounded-3xl p-8 mb-8 text-center">
-          <div className="mb-6">
-            <div className="amharic-text text-8xl text-primary font-bold mb-4" data-testid="text-amharic-character">
-              {amharicChar}
+        {/* Character Display - Show all terms */}
+        {Array.from({ length: maxTerms }).map((_, index) => (
+          <Card key={index} className="border border-border rounded-3xl p-8 mb-8 text-center">
+            <div className="mb-6">
+              <div className="amharic-text text-8xl text-primary font-bold mb-4" data-testid={`text-amharic-character-${index}`}>
+                {amharicTerms[index] || amharicTerms[0]}
+              </div>
+              <div className="flex flex-col gap-4 max-w-sm mx-auto">
+                <Card className="bg-muted rounded-2xl p-4">
+                  <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider">Chinese</p>
+                  <p className="text-2xl font-bold text-foreground" data-testid={`text-chinese-character-${index}`}>
+                    {chineseTerms[index] || chineseTerms[0]}
+                  </p>
+                </Card>
+                <Card className="bg-muted rounded-2xl p-4">
+                  <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider">Arabic</p>
+                  <p className="text-2xl font-bold text-foreground" data-testid={`text-arabic-character-${index}`} dir="rtl">
+                    {arabicTerms[index] || arabicTerms[0]}
+                  </p>
+                </Card>
+                <Card className="bg-muted rounded-2xl p-4">
+                  <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider">English</p>
+                  <p className="text-2xl font-bold text-foreground" data-testid={`text-english-character-${index}`}>
+                    {englishTerms[index] || englishTerms[0]}
+                  </p>
+                </Card>
+              </div>
             </div>
-            <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
-              <Card className="bg-muted rounded-2xl p-4">
-                <p className="text-xs text-muted-foreground mb-1">English</p>
-                <p className="text-2xl font-bold text-foreground" data-testid="text-english-character">
-                  {englishChar}
-                </p>
-              </Card>
-              <Card className="bg-muted rounded-2xl p-4">
-                <p className="text-xs text-muted-foreground mb-1">Arabic</p>
-                <p className="text-2xl font-bold text-foreground" data-testid="text-arabic-character">
-                  {arabicChar}
-                </p>
-              </Card>
-            </div>
-          </div>
-          
-          {/* Audio Controls */}
-          <AudioPlayer
-            audioUrl={lesson.audioUrl}
-            slowAudioUrl={lesson.slowAudioUrl}
-            label={amharicChar}
-          />
-        </Card>
+            
+            {/* Audio Controls - only show for first term */}
+            {index === 0 && (
+              <AudioPlayer
+                audioUrl={lesson.audioUrl}
+                slowAudioUrl={lesson.slowAudioUrl}
+                label={amharicTerms[0]}
+              />
+            )}
+          </Card>
+        ))}
         
         {/* Practice Section */}
         <Card className="bg-accent/5 border border-accent/20 rounded-3xl p-6 mb-8">

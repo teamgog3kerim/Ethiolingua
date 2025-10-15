@@ -8,8 +8,9 @@ export const initialLessons = [
     orderIndex: 1,
     content: {
       amharic: ["አ"],
-      english: ["A"],
-      arabic: ["أ"]
+      chinese: ["阿 (ā)"],
+      arabic: ["أ"],
+      english: ["A"]
     },
     audioUrl: "/audio/lesson1_a.mp3",
     slowAudioUrl: "/audio/lesson1_a_slow.mp3",
@@ -32,8 +33,9 @@ export const initialLessons = [
     orderIndex: 2,
     content: {
       amharic: ["ለ"],
-      english: ["L"],
-      arabic: ["ل"]
+      chinese: ["勒 (lè)"],
+      arabic: ["ل"],
+      english: ["L"]
     },
     audioUrl: "/audio/lesson2_l.mp3",
     slowAudioUrl: "/audio/lesson2_l_slow.mp3",
@@ -56,8 +58,9 @@ export const initialLessons = [
     orderIndex: 3,
     content: {
       amharic: ["መ"],
-      english: ["M"],
-      arabic: ["م"]
+      chinese: ["么 (me)"],
+      arabic: ["م"],
+      english: ["M"]
     },
     audioUrl: "/audio/lesson3_m.mp3",
     slowAudioUrl: "/audio/lesson3_m_slow.mp3",
@@ -80,8 +83,9 @@ export const initialLessons = [
     orderIndex: 4,
     content: {
       amharic: ["ረ"],
-      english: ["R"],
-      arabic: ["ر"]
+      chinese: ["日 (rì)"],
+      arabic: ["ر"],
+      english: ["R"]
     },
     audioUrl: "/audio/lesson4_r.mp3",
     slowAudioUrl: "/audio/lesson4_r_slow.mp3",
@@ -104,8 +108,9 @@ export const initialLessons = [
     orderIndex: 5,
     content: {
       amharic: ["ሰ"],
-      english: ["S"],
-      arabic: ["س"]
+      chinese: ["斯 (sī)"],
+      arabic: ["س"],
+      english: ["S"]
     },
     audioUrl: "/audio/lesson5_s.mp3",
     slowAudioUrl: "/audio/lesson5_s_slow.mp3",
@@ -129,8 +134,9 @@ export const initialLessons = [
     orderIndex: 6,
     content: {
       amharic: ["ሰላም"],
-      english: ["Hello"],
-      arabic: ["مرحبا"]
+      chinese: ["你好"],
+      arabic: ["مرحبا"],
+      english: ["Hello"]
     },
     audioUrl: "/audio/lesson6_hello.mp3",
     slowAudioUrl: "/audio/lesson6_hello_slow.mp3",
@@ -153,8 +159,9 @@ export const initialLessons = [
     orderIndex: 7,
     content: {
       amharic: ["አንድ", "ሁለት", "ሶስት", "አራት", "አምስት"],
-      english: ["One", "Two", "Three", "Four", "Five"],
-      arabic: ["واحد", "اثنان", "ثلاثة", "أربعة", "خمسة"]
+      chinese: ["一", "二", "三", "四", "五"],
+      arabic: ["واحد", "اثنان", "ثلاثة", "أربعة", "خمسة"],
+      english: ["One", "Two", "Three", "Four", "Five"]
     },
     audioUrl: "/audio/lesson7_numbers.mp3",
     slowAudioUrl: "/audio/lesson7_numbers_slow.mp3",
@@ -177,8 +184,9 @@ export const initialLessons = [
     orderIndex: 8,
     content: {
       amharic: ["እናት", "አባት", "ወንድም", "እህት"],
-      english: ["Mother", "Father", "Brother", "Sister"],
-      arabic: ["أم", "أب", "أخ", "أخت"]
+      chinese: ["母亲", "父亲", "兄弟", "姐妹"],
+      arabic: ["أم", "أب", "أخ", "أخت"],
+      english: ["Mother", "Father", "Brother", "Sister"]
     },
     audioUrl: "/audio/lesson8_family.mp3",
     slowAudioUrl: "/audio/lesson8_family_slow.mp3",
@@ -220,8 +228,9 @@ export function generateAdditionalLessons() {
         orderIndex: lessonId,
         content: {
           amharic: [`ቃል${lessonId}`],
-          english: [`Word${lessonId}`],
-          arabic: [`كلمة${lessonId}`]
+          chinese: [`词${lessonId}`],
+          arabic: [`كلمة${lessonId}`],
+          english: [`Word${lessonId}`]
         },
         audioUrl: `/audio/lesson${lessonId}.mp3`,
         slowAudioUrl: `/audio/lesson${lessonId}_slow.mp3`,

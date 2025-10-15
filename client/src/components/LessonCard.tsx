@@ -15,8 +15,9 @@ interface LessonCardProps {
 export function LessonCard({ lesson }: LessonCardProps) {
   const content = lesson.content as any;
   const amharicChar = content?.amharic?.[0] || "አ";
-  const englishChar = content?.english?.[0] || "A";
+  const chineseChar = content?.chinese?.[0] || "A";
   const arabicChar = content?.arabic?.[0] || "أ";
+  const englishChar = content?.english?.[0] || "A";
   
   // Determine lesson level based on order index
   const lessonLevel = lesson.orderIndex ? 
@@ -56,26 +57,43 @@ export function LessonCard({ lesson }: LessonCardProps) {
           </div>
         </div>
         
-        {/* Language Preview (Blurred) */}
-        <div className="mb-4 p-3 bg-muted/20 rounded-xl border border-muted-foreground/10">
-          <div className="flex items-center w-full opacity-40 blur-sm">
-            <div className="language-section">
-              <div className="char-display-amharic text-primary mb-1 text-center w-full">{amharicChar}</div>
-              <p className="text-xs text-muted-foreground text-center">Amharic</p>
+        {/* Language Preview (Blurred) - Vertical Layout */}
+        <div className="mb-4 p-4 bg-muted/20 rounded-xl border border-muted-foreground/10">
+          <div className="flex flex-col w-full opacity-40 blur-sm space-y-2">
+            {/* Amharic */}
+            <div className="text-center py-2">
+              <div className="char-display-amharic text-primary mb-1">{amharicChar}</div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">Amharic</p>
             </div>
-            <div className="language-separator">
-              <div className="text-muted-foreground">↔</div>
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-6 h-px bg-gradient-to-r from-primary to-secondary" />
+              <span className="text-xs text-muted-foreground">means</span>
+              <div className="w-6 h-px bg-gradient-to-r from-secondary to-accent" />
             </div>
-            <div className="language-section">
-              <div className="char-display-standard text-foreground mb-1 text-center w-full">{englishChar}</div>
-              <p className="text-xs text-muted-foreground text-center">English</p>
+            {/* Chinese */}
+            <div className="text-center py-2">
+              <div className="char-display-standard text-foreground mb-1">{chineseChar}</div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">Chinese</p>
             </div>
-            <div className="language-separator">
-              <div className="text-muted-foreground">↔</div>
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-6 h-px bg-gradient-to-r from-primary to-secondary" />
+              <span className="text-xs text-muted-foreground">means</span>
+              <div className="w-6 h-px bg-gradient-to-r from-secondary to-accent" />
             </div>
-            <div className="language-section">
-              <div className="char-display-standard text-foreground mb-1 text-center w-full" dir="rtl">{arabicChar}</div>
-              <p className="text-xs text-muted-foreground text-center">Arabic</p>
+            {/* Arabic */}
+            <div className="text-center py-2">
+              <div className="char-display-standard text-foreground mb-1" dir="rtl">{arabicChar}</div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">Arabic</p>
+            </div>
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-6 h-px bg-gradient-to-r from-primary to-secondary" />
+              <span className="text-xs text-muted-foreground">means</span>
+              <div className="w-6 h-px bg-gradient-to-r from-secondary to-accent" />
+            </div>
+            {/* English */}
+            <div className="text-center py-2">
+              <div className="char-display-standard text-foreground mb-1">{englishChar}</div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">English</p>
             </div>
           </div>
         </div>
@@ -148,7 +166,22 @@ export function LessonCard({ lesson }: LessonCardProps) {
               <div className="w-8 h-px bg-gradient-to-r from-secondary to-accent" />
             </div>
             
-            {/* Arabic - Middle (RTL support) */}
+            {/* Chinese - Second */}
+            <div className="language-section-vertical">
+              <div className="char-display-standard text-foreground mb-2 group-hover:scale-105 transition-transform duration-300 formal-text">
+                {chineseChar}
+              </div>
+              <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Chinese</p>
+            </div>
+            
+            {/* Separator */}
+            <div className="language-separator-vertical">
+              <div className="w-8 h-px bg-gradient-to-r from-primary to-secondary" />
+              <div className="text-sm text-muted-foreground font-medium px-2">means</div>
+              <div className="w-8 h-px bg-gradient-to-r from-secondary to-accent" />
+            </div>
+            
+            {/* Arabic - Third (RTL support) */}
             <div className="language-section-vertical">
               <div className="char-display-standard text-foreground mb-2 group-hover:scale-105 transition-transform duration-300 formal-text" dir="rtl">
                 {arabicChar}
