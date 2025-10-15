@@ -8,7 +8,7 @@ export const initialLessons = [
     orderIndex: 1,
     content: {
       amharic: ["አ"],
-      chinese: ["阿 (ā)"],
+      chinese: ["字母 አ (阿音)"],
       arabic: ["أ"],
       english: ["A"]
     },
@@ -33,7 +33,7 @@ export const initialLessons = [
     orderIndex: 2,
     content: {
       amharic: ["ለ"],
-      chinese: ["勒 (lè)"],
+      chinese: ["字母 ለ (勒音)"],
       arabic: ["ل"],
       english: ["L"]
     },
@@ -58,7 +58,7 @@ export const initialLessons = [
     orderIndex: 3,
     content: {
       amharic: ["መ"],
-      chinese: ["么 (me)"],
+      chinese: ["字母 መ (么音)"],
       arabic: ["م"],
       english: ["M"]
     },
@@ -83,7 +83,7 @@ export const initialLessons = [
     orderIndex: 4,
     content: {
       amharic: ["ረ"],
-      chinese: ["日 (rì)"],
+      chinese: ["字母 ረ (若音)"],
       arabic: ["ر"],
       english: ["R"]
     },
@@ -108,7 +108,7 @@ export const initialLessons = [
     orderIndex: 5,
     content: {
       amharic: ["ሰ"],
-      chinese: ["斯 (sī)"],
+      chinese: ["字母 ሰ (斯音)"],
       arabic: ["س"],
       english: ["S"]
     },
@@ -210,27 +210,43 @@ export function generateAdditionalLessons() {
   
   const categories = ["vocabulary", "grammar", "conversation", "culture"];
   const topics = [
-    "Colors", "Food", "Animals", "Body Parts", "Weather", "Time", "Days of Week",
-    "Months", "Clothes", "House", "Transportation", "Occupations", "Emotions",
-    "Actions", "Places", "Shopping", "Restaurant", "Hospital", "School"
+    { en: "Colors", zh: "颜色" },
+    { en: "Food", zh: "食物" },
+    { en: "Animals", zh: "动物" },
+    { en: "Body Parts", zh: "身体部位" },
+    { en: "Weather", zh: "天气" },
+    { en: "Time", zh: "时间" },
+    { en: "Days of Week", zh: "星期" },
+    { en: "Months", zh: "月份" },
+    { en: "Clothes", zh: "衣服" },
+    { en: "House", zh: "房子" },
+    { en: "Transportation", zh: "交通" },
+    { en: "Occupations", zh: "职业" },
+    { en: "Emotions", zh: "情感" },
+    { en: "Actions", zh: "动作" },
+    { en: "Places", zh: "地点" },
+    { en: "Shopping", zh: "购物" },
+    { en: "Restaurant", zh: "餐厅" },
+    { en: "Hospital", zh: "医院" },
+    { en: "School", zh: "学校" }
   ];
   
   for (let month = 2; month <= 15; month++) {
     for (let i = 0; i < 55; i++) {
       const category = categories[i % categories.length];
-      const topic = topics[i % topics.length];
+      const topicObj = topics[i % topics.length];
       
       additionalLessons.push({
         id: lessonId,
-        title: `${topic} ${Math.floor(i / topics.length) + 1}`,
+        title: `${topicObj.en} ${Math.floor(i / topics.length) + 1}`,
         category,
         level: month <= 5 ? "beginner" : month <= 10 ? "intermediate" : "advanced",
         orderIndex: lessonId,
         content: {
           amharic: [`ቃል${lessonId}`],
-          chinese: [`词${lessonId}`],
+          chinese: [`${topicObj.zh}词汇`],
           arabic: [`كلمة${lessonId}`],
-          english: [`Word${lessonId}`]
+          english: [`${topicObj.en} Vocabulary`]
         },
         audioUrl: `/audio/lesson${lessonId}.mp3`,
         slowAudioUrl: `/audio/lesson${lessonId}_slow.mp3`,
@@ -242,7 +258,7 @@ export function generateAdditionalLessons() {
             answer: `Word${lessonId}`
           }
         ],
-        objectives: [`Learn ${topic}`, "Practice pronunciation"],
+        objectives: [`Learn ${topicObj.en}`, "Practice pronunciation"],
         isPremium: true
       });
       
