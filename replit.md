@@ -1,6 +1,6 @@
 # Overview
 
-This is an AI-powered Amharic language learning application built for English and Arabic speakers. The app provides interactive lessons, pronunciation practice, AI tutoring, and progress tracking. It features a comprehensive curriculum starting with alphabet basics and progressing through vocabulary and grammar, with both free trial lessons and premium subscription content.
+This is an AI-powered Amharic language learning application built for English, Arabic, and Chinese speakers. The app provides interactive lessons, pronunciation practice, AI tutoring, and progress tracking. It features a comprehensive curriculum starting with alphabet basics and progressing through vocabulary and grammar, with both free trial lessons and premium subscription content. The app uses a vertical language arrangement (Amharic → Chinese → Arabic → English) throughout the interface for optimal multi-language learning.
 
 # User Preferences
 
@@ -16,6 +16,7 @@ Key frontend decisions:
 - **Wouter**: Lightweight router selected over React Router for smaller bundle size
 - **TanStack Query**: Handles server state, caching, and API synchronization efficiently
 - **shadcn/ui + Tailwind**: Provides consistent, accessible UI components with utility-first styling
+- **Multi-language support**: Vertical language arrangement (Amharic → Chinese → Arabic → English) with automatic font sizing for optimal readability across all language groups
 
 ## Backend Architecture
 The server uses Express.js with TypeScript running on Node.js. It follows a modular structure with separate route handlers, services, and storage layers. The API is RESTful with proper error handling and logging middleware.
@@ -40,6 +41,7 @@ Key storage decisions:
 - **PostgreSQL**: Robust relational database suitable for structured learning data
 - **Drizzle ORM**: Provides type safety and excellent developer experience
 - **Neon Database**: Serverless PostgreSQL provider for scalability and ease of deployment
+- **Multi-language content**: Lesson content structure supports Chinese, Arabic, and English translations alongside Amharic, with phonetic representations for alphabet lessons and authentic translations for vocabulary
 
 ## AI Integration
 OpenAI integration for conversational AI tutoring and pronunciation feedback. The service handles chat conversations with context retention and provides personalized learning assistance.
