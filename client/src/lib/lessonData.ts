@@ -8,7 +8,7 @@ export const initialLessons = [
     orderIndex: 1,
     content: {
       amharic: ["አ"],
-      chinese: ["字母 አ (阿音)"],
+      chinese: ["阿 (ā)"],
       arabic: ["أ"],
       english: ["A"]
     },
@@ -33,7 +33,7 @@ export const initialLessons = [
     orderIndex: 2,
     content: {
       amharic: ["ለ"],
-      chinese: ["字母 ለ (勒音)"],
+      chinese: ["艾勒 (ài lè)"],
       arabic: ["ل"],
       english: ["L"]
     },
@@ -58,7 +58,7 @@ export const initialLessons = [
     orderIndex: 3,
     content: {
       amharic: ["መ"],
-      chinese: ["字母 መ (么音)"],
+      chinese: ["艾姆 (ài mǔ)"],
       arabic: ["م"],
       english: ["M"]
     },
@@ -83,7 +83,7 @@ export const initialLessons = [
     orderIndex: 4,
     content: {
       amharic: ["ረ"],
-      chinese: ["字母 ረ (若音)"],
+      chinese: ["阿尔 (ā ěr)"],
       arabic: ["ر"],
       english: ["R"]
     },
@@ -108,7 +108,7 @@ export const initialLessons = [
     orderIndex: 5,
     content: {
       amharic: ["ሰ"],
-      chinese: ["字母 ሰ (斯音)"],
+      chinese: ["艾思 (ài sī)"],
       arabic: ["س"],
       english: ["S"]
     },
@@ -244,9 +244,9 @@ export function generateAdditionalLessons() {
         orderIndex: lessonId,
         content: {
           amharic: [`ቃል${lessonId}`],
-          chinese: [`${topicObj.zh}词汇`],
+          chinese: [`${topicObj.zh}`],
           arabic: [`كلمة${lessonId}`],
-          english: [`${topicObj.en} Vocabulary`]
+          english: [`${topicObj.en}`]
         },
         audioUrl: `/audio/lesson${lessonId}.mp3`,
         slowAudioUrl: `/audio/lesson${lessonId}_slow.mp3`,
