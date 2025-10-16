@@ -25,7 +25,7 @@ const translations = {
     // Hero Section
     heroTitle: "Master Amharic with AI",
     heroSubtitle: "AI-Powered Language Learning Platform",
-    heroDescription: "Designed for English, Arabic & Chinese speakers",
+    heroDescription: "Designed for English & Arabic speakers",
     startFreeTrial: "Start Free Trial",
     signIn: "Sign In",
     freeLessons: "First 5 lessons absolutely free",
@@ -47,7 +47,7 @@ const translations = {
     pronunciationDesc: "Perfect your Amharic pronunciation with real-time voice recognition and instant feedback.",
     
     multilingualTitle: "Multilingual Support",
-    multilingualDesc: "Learn in your native language with full support for English, Arabic, and Chinese speakers.",
+    multilingualDesc: "Learn in your native language with full support for English and Arabic speakers.",
     
     lessonsTitle: "Structured Lessons",
     lessonsDesc: "Follow a comprehensive curriculum from alphabet basics to advanced conversation skills.",
@@ -66,7 +66,7 @@ const translations = {
     step1Desc: "Sign up for free and get instant access to your first 5 lessons",
     
     step2Title: "Choose Your Language",
-    step2Desc: "Select your native language (English, Arabic, or Chinese) for personalized lessons",
+    step2Desc: "Select your native language (English or Arabic) for personalized lessons",
     
     step3Title: "Start Learning",
     step3Desc: "Begin your journey with interactive lessons and AI-powered guidance",
@@ -84,7 +84,7 @@ const translations = {
     // Hero Section
     heroTitle: "تعلم الأمهرية مع الذكاء الاصطناعي",
     heroSubtitle: "منصة تعليم اللغة بالذكاء الاصطناعي",
-    heroDescription: "مصممة للمتحدثين بالإنجليزية والعربية والصينية",
+    heroDescription: "مصممة للمتحدثين بالإنجليزية والعربية",
     startFreeTrial: "ابدأ التجربة المجانية",
     signIn: "تسجيل الدخول",
     freeLessons: "أول 5 دروس مجانية تماماً",
@@ -106,7 +106,7 @@ const translations = {
     pronunciationDesc: "أتقن نطقك للأمهرية مع التعرف الصوتي الفوري والملاحظات الفورية.",
     
     multilingualTitle: "دعم متعدد اللغات",
-    multilingualDesc: "تعلم بلغتك الأم مع الدعم الكامل للمتحدثين بالإنجليزية والعربية والصينية.",
+    multilingualDesc: "تعلم بلغتك الأم مع الدعم الكامل للمتحدثين بالإنجليزية والعربية.",
     
     lessonsTitle: "دروس منظمة",
     lessonsDesc: "اتبع منهجاً شاملاً من أساسيات الأبجدية إلى مهارات المحادثة المتقدمة.",
@@ -125,7 +125,7 @@ const translations = {
     step1Desc: "سجل مجاناً واحصل على وصول فوري لأول 5 دروس",
     
     step2Title: "اختر لغتك",
-    step2Desc: "اختر لغتك الأم (الإنجليزية أو العربية أو الصينية) للحصول على دروس مخصصة",
+    step2Desc: "اختر لغتك الأم (الإنجليزية أو العربية) للحصول على دروس مخصصة",
     
     step3Title: "ابدأ التعلم",
     step3Desc: "ابدأ رحلتك مع دروس تفاعلية وإرشادات مدعومة بالذكاء الاصطناعي",
@@ -143,7 +143,7 @@ const translations = {
     // Hero Section
     heroTitle: "አማርኛን በ AI ያስተምሩ",
     heroSubtitle: "በ AI የሚሰራ የቋንቋ ትምህርት መድረክ",
-    heroDescription: "ለእንግሊዝኛ፣ ዓረብኛ እና ቻይንኛ ተናጋሪዎች የተዘጋጀ",
+    heroDescription: "ለእንግሊዝኛ እና ዓረብኛ ተናጋሪዎች የተዘጋጀ",
     startFreeTrial: "ነጻ ሙከራ ይጀምሩ",
     signIn: "ይግቡ",
     freeLessons: "የመጀመሪያዎቹ 5 ትምህርቶች በሙሉ ነጻ",
@@ -165,7 +165,7 @@ const translations = {
     pronunciationDesc: "በእውነተኛ ጊዜ የድምጽ ማወቂያ እና ፈጣን አስተያየት አማርኛ አጠባበቅዎን ያሻሽሉ።",
     
     multilingualTitle: "ባለብዙ ቋንቋ ድጋፍ",
-    multilingualDesc: "በእናት ቋንቋዎ ይማሩ ለእንግሊዝኛ፣ ዓረብኛ እና ቻይንኛ ተናጋሪዎች ሙሉ ድጋፍ።",
+    multilingualDesc: "በእናት ቋንቋዎ ይማሩ ለእንግሊዝኛ እና ዓረብኛ ተናጋሪዎች ሙሉ ድጋፍ።",
     
     lessonsTitle: "የተደራጁ ትምህርቶች",
     lessonsDesc: "ከፊደል መሠረታዊ ጀምሮ እስከ ላቀ የውይይት ክህሎት አጠቃላይ ትምህርትን ይከተሉ።",
@@ -184,7 +184,7 @@ const translations = {
     step1Desc: "በነጻ ይመዝገቡ እና ወደ የመጀመሪያዎቹ 5 ትምህርቶች ፈጣን መድረሻ ያግኙ",
     
     step2Title: "ቋንቋዎን ይምረጡ",
-    step2Desc: "ለግላዊ ትምህርቶች የእናት ቋንቋዎን (እንግሊዝኛ፣ ዓረብኛ ወይም ቻይንኛ) ይምረጡ",
+    step2Desc: "ለግላዊ ትምህርቶች የእናት ቋንቋዎን (እንግሊዝኛ ወይም ዓረብኛ) ይምረጡ",
     
     step3Title: "መማር ይጀምሩ",
     step3Desc: "ጉዞዎን በመስተጋብር ትምህርቶች እና በ AI የሚመራ መመሪያ ይጀምሩ",
@@ -219,11 +219,11 @@ export default function Landing() {
     // Set meta description
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Learn Amharic with AI-powered lessons designed for English, Arabic, and Chinese speakers. Start your free trial with 5 lessons and join 10,000+ learners mastering Ethiopian language.');
+      metaDescription.setAttribute('content', 'Learn Amharic with AI-powered lessons designed for English and Arabic speakers. Start your free trial with 5 lessons and join 10,000+ learners mastering Ethiopian language.');
     } else {
       const meta = document.createElement('meta');
       meta.name = 'description';
-      meta.content = 'Learn Amharic with AI-powered lessons designed for English, Arabic, and Chinese speakers. Start your free trial with 5 lessons and join 10,000+ learners mastering Ethiopian language.';
+      meta.content = 'Learn Amharic with AI-powered lessons designed for English and Arabic speakers. Start your free trial with 5 lessons and join 10,000+ learners mastering Ethiopian language.';
       document.head.appendChild(meta);
     }
   }, []);
