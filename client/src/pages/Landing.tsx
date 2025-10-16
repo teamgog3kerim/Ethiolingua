@@ -45,12 +45,12 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950">
       {/* Hero Section */}
-      <section className="relative gradient-primary overflow-hidden min-h-[600px] sm:min-h-[700px]">
+      <section className="relative gradient-hero overflow-hidden min-h-[600px] sm:min-h-[700px]">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10 pattern-bg" />
         
-        {/* Dark overlay for better text contrast */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/20" />
+        {/* Subtle overlay for depth */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/5 to-black/15" />
         
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
           <div className="text-center">
@@ -284,7 +284,7 @@ export default function Landing() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 gradient-primary relative overflow-hidden">
+      <section className="py-20 gradient-hero relative overflow-hidden">
         <div className="absolute inset-0 opacity-20 pattern-bg" />
         
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
