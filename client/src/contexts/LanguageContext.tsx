@@ -259,12 +259,21 @@ const translations: Record<Language, Translation> = {
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
-  const [currentLanguage, setCurrentLanguage] = useState<Language>('english');
+  const [currentLanguage, setCurrentLanguage] = useState<Language>(() => {
+    // Initialize from localStorage if available
+    const saved = localStorage.getItem('app-language') as Language;
+    if (saved === 'english' || saved === 'arabic' || saved === 'amharic') {
+      return saved;
+    }
+    return 'english';
+  });
 
-  // Update language based on user preferences
+  // Update language based on user preferences (when logged in)
   useEffect(() => {
     if (user?.interfaceLanguage) {
-      setCurrentLanguage(user.interfaceLanguage as Language);
+      const userLang = user.interfaceLanguage as Language;
+      setCurrentLanguage(userLang);
+      localStorage.setItem('app-language', userLang);
     }
   }, [user?.interfaceLanguage]);
 
@@ -288,6 +297,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   const setLanguage = (lang: Language) => {
     setCurrentLanguage(lang);
+    localStorage.setItem('app-language', lang);
   };
 
   const t = (key: string, fallback?: string): string => {
