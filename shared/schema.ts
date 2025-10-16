@@ -36,8 +36,8 @@ export const users = pgTable("users", {
   sex: varchar("sex"), // male, female, other, prefer_not_to_say
   country: varchar("country"),
   profession: varchar("profession"),
-  nativeLanguage: varchar("native_language").notNull().default("english"), // english, arabic, chinese, amharic
-  interfaceLanguage: varchar("interface_language").notNull().default("english"), // english, arabic, chinese, amharic
+  nativeLanguage: varchar("native_language").notNull().default("english"), // english, arabic
+  interfaceLanguage: varchar("interface_language").notNull().default("english"), // english, arabic
   theme: varchar("theme").default("default"), // light, dark, default
   alwaysLoggedIn: boolean("always_logged_in").default(false),
   subscriptionStatus: varchar("subscription_status").default("trial"), // trial, active, canceled, expired
@@ -53,7 +53,7 @@ export const lessons = pgTable("lessons", {
   category: varchar("category").notNull(), // alphabet, vocabulary, grammar, etc.
   level: varchar("level").notNull().default("beginner"), // beginner, intermediate, advanced
   orderIndex: integer("order_index").notNull(),
-  content: jsonb("content").notNull(), // { amharic: [], chinese: [], arabic: [], english: [] }
+  content: jsonb("content").notNull(), // { amharic: [], arabic: [], english: [] }
   audioUrl: varchar("audio_url"),
   slowAudioUrl: varchar("slow_audio_url"),
   quizQuestions: jsonb("quiz_questions").notNull(), // array of quiz questions
