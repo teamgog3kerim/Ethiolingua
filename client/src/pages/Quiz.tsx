@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Quiz() {
   const { id } = useParams<{ id: string }>();
@@ -16,8 +17,9 @@ export default function Quiz() {
   const [score, setScore] = useState(0);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { t } = useLanguage();
 
-  const { data: lesson, isLoading } = useQuery({
+  const { data: lesson, isLoading } = useQuery<any>({
     queryKey: ["/api/lessons", lessonId],
   });
 
@@ -46,9 +48,9 @@ export default function Quiz() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Card className="p-8 text-center">
-          <h2 className="text-xl font-bold mb-4">Quiz not available</h2>
+          <h2 className="text-xl font-bold mb-4">{t('quiz.quizNotAvailable')}</h2>
           <Link href="/">
-            <Button>Back to Home</Button>
+            <Button>{t('quiz.backToHome')}</Button>
           </Link>
         </Card>
       </div>
@@ -98,17 +100,17 @@ export default function Quiz() {
               }`}></i>
             </div>
             <h2 className="text-2xl font-bold text-foreground mb-2" data-testid="text-quiz-score">
-              {score}% Score
+              {t('quiz.score').replace('{score}', score.toString())}
             </h2>
             <p className="text-muted-foreground">
-              {score >= 80 ? "Excellent work!" : score >= 60 ? "Good job!" : "Keep practicing!"}
+              {score >= 80 ? t('quiz.excellentWork') : score >= 60 ? t('quiz.goodJob') : t('quiz.keepPracticing')}
             </p>
           </div>
 
           <div className="space-y-3">
             <Link href="/">
               <Button className="w-full" data-testid="button-continue-learning">
-                Continue Learning
+                {t('quiz.continueLearning')}
               </Button>
             </Link>
             <Button 
@@ -117,7 +119,7 @@ export default function Quiz() {
               onClick={() => window.location.reload()}
               data-testid="button-retake-quiz"
             >
-              Retake Quiz
+              {t('quiz.retakeQuiz')}
             </Button>
           </div>
         </Card>
@@ -139,8 +141,10 @@ export default function Quiz() {
             
             <div className="flex-1 mx-4">
               <div className="flex items-center justify-between text-sm text-muted-foreground mb-1">
-                <span data-testid="text-question-number">Question {currentQuestion + 1} of {questions.length}</span>
-                <span>Quiz Time!</span>
+                <span data-testid="text-question-number">
+                  {t('quiz.questionOf').replace('{current}', (currentQuestion + 1).toString()).replace('{total}', questions.length.toString())}
+                </span>
+                <span>{t('quiz.quizTime')}</span>
               </div>
               <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
                 <div 
@@ -209,11 +213,11 @@ export default function Quiz() {
             <div className="flex items-center gap-4">
               <Button variant="ghost" size="sm" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
                 <i className="fas fa-lightbulb"></i>
-                Hint
+                {t('quiz.hint')}
               </Button>
               <Button variant="ghost" size="sm" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
                 <i className="fas fa-volume-up"></i>
-                Play Audio
+                {t('quiz.playAudio')}
               </Button>
             </div>
             <div className="flex items-center gap-2">
@@ -232,7 +236,7 @@ export default function Quiz() {
         {/* Navigation */}
         <div className="flex items-center justify-between">
           <Button variant="secondary" className="px-6 py-3 rounded-2xl font-medium">
-            Skip
+            {t('quiz.skip')}
           </Button>
           
           <Button 
@@ -241,7 +245,7 @@ export default function Quiz() {
             className="px-8 py-3 rounded-2xl font-medium"
             data-testid="button-check-answer"
           >
-            {currentQuestion + 1 < questions.length ? "Next Question" : "Finish Quiz"}
+            {currentQuestion + 1 < questions.length ? t('quiz.nextQuestion') : t('quiz.finishQuiz')}
           </Button>
         </div>
       </main>

@@ -37,7 +37,7 @@ export function SpeechRecognition({ targetText, onResult, isActive = true }: Spe
       // Start with English but the system will adapt based on phonetic analysis
       recognition.lang = 'en-US';
       recognition.maxAlternatives = 3; // Get multiple alternatives
-      recognition.grammars = null; // Allow free-form speech
+      // Don't set grammars property - browser will use default free-form speech
       
       recognition.onstart = () => {
         setIsListening(true);
