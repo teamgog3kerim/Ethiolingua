@@ -143,18 +143,15 @@ export function SpeechRecognition({ targetText, onResult, isActive = true }: Spe
     try {
       // Use server-side phonetic transliteration for better Amharic support
       const [spokenPhoneticResponse, targetPhoneticResponse] = await Promise.all([
-        apiRequest('/api/phonetic-transliteration', { 
-          method: 'POST', 
-          body: { text: spokenLower } 
-        }),
-        apiRequest('/api/phonetic-transliteration', { 
-          method: 'POST', 
-          body: { text: targetLower } 
-        })
+        apiRequest('POST', '/api/phonetic-transliteration', { text: spokenLower }),
+        apiRequest('POST', '/api/phonetic-transliteration', { text: targetLower })
       ]);
 
-      const spokenPhonetic = spokenPhoneticResponse.phoneticText;
-      const targetPhonetic = targetPhoneticResponse.phoneticText;
+      const spokenPhoneticData = await spokenPhoneticResponse.json();
+      const targetPhoneticData = await targetPhoneticResponse.json();
+      
+      const spokenPhonetic = spokenPhoneticData.phoneticText;
+      const targetPhonetic = targetPhoneticData.phoneticText;
       
       // Check phonetic similarity first
       if (spokenPhonetic === targetPhonetic) return 95;
@@ -178,18 +175,17 @@ export function SpeechRecognition({ targetText, onResult, isActive = true }: Spe
       console.error(`Error in phonetic transliteration (attempt ${retryCount + 1}):`, error);
       
       // Retry on network errors
+      const errorMessage = error instanceof Error ? error.message : String(error);
       if (retryCount < maxRetries && (
-        error.message?.includes('fetch') || 
-        error.message?.includes('network') || 
-        error.message?.includes('timeout')
+        errorMessage.includes('fetch') || 
+        errorMessage.includes('network') || 
+        errorMessage.includes('timeout')
       )) {
-        console.log(`Retrying in ${retryDelay}ms...`);
         await new Promise(resolve => setTimeout(resolve, retryDelay));
         return calculatePronunciationScore(spoken, target, retryCount + 1);
       }
       
       // Final fallback to basic string similarity if all retries fail
-      console.log("Using fallback pronunciation scoring");
       const distance = levenshteinDistance(spokenLower, targetLower);
       const maxLength = Math.max(spoken.length, target.length);
       const similarity = maxLength > 0 ? 1 - (distance / maxLength) : 0;

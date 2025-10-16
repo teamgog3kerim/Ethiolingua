@@ -93,7 +93,6 @@ export default function Progress() {
       }
     } catch (error) {
       // User cancelled or error occurred
-      console.log('Sharing cancelled or failed:', error);
       showSharingOptions(shareText, shareUrl);
     }
   };
