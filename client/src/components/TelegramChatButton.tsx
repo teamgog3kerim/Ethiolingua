@@ -1,54 +1,41 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { MessageCircle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-type Language = 'en' | 'ar';
-
-interface TelegramChatButtonProps {
-  language?: Language;
-}
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const translations = {
-  en: {
+  english: {
     needHelp: "Need Help?",
     welcome: "👋 Welcome! We're here to help you with any questions or feedback about your Amharic learning journey.",
     clickBelow: "Click below to start chatting with us on Telegram:",
     chatButton: "Chat on Telegram",
   },
-  ar: {
+  arabic: {
     needHelp: "هل تحتاج مساعدة؟",
     welcome: "👋 مرحباً! نحن هنا لمساعدتك في أي أسئلة أو ملاحظات حول رحلتك في تعلم الأمهرية.",
     clickBelow: "انقر أدناه لبدء الدردشة معنا على تيليجرام:",
     chatButton: "الدردشة على تيليجرام",
+  },
+  amharic: {
+    needHelp: "እርዳታ ያስፈልግዎታል?",
+    welcome: "👋 እንኳን ደህና መጡ! ስለ አማርኛ የመማር ጉዞዎ ማንኛውም ጥያቄዎች ወይም አስተያየቶች እንዲያቀርቡ እዚህ ነን።",
+    clickBelow: "በቴሌግራም ላይ ከእኛ ጋር ለመወያየት ከታች ይጫኑ:",
+    chatButton: "በቴሌግራም ይወያዩ",
   }
 };
 
-export default function TelegramChatButton({ language: propLanguage }: TelegramChatButtonProps) {
+export default function TelegramChatButton() {
   const [isOpen, setIsOpen] = useState(false);
-  const [language, setLanguage] = useState<Language>('en');
+  const { currentLanguage, isRTL } = useLanguage();
   const telegramUsername = "Kerlangu";
   const telegramLink = `https://t.me/${telegramUsername}`;
-
-  useEffect(() => {
-    // If language prop is provided, use it
-    if (propLanguage) {
-      setLanguage(propLanguage);
-    } else {
-      // Otherwise, try to get from localStorage (from landing page selection)
-      const savedLanguage = localStorage.getItem('landing-language') as Language;
-      if (savedLanguage === 'ar' || savedLanguage === 'en') {
-        setLanguage(savedLanguage);
-      }
-    }
-  }, [propLanguage]);
 
   const handleOpenTelegram = () => {
     window.open(telegramLink, '_blank', 'noopener,noreferrer');
     setIsOpen(false);
   };
 
-  const t = translations[language];
-  const isRTL = language === 'ar';
+  const t = translations[currentLanguage];
 
   return (
     <>
