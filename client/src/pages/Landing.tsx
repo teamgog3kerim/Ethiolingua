@@ -10,11 +10,146 @@ import {
   Brain,
   MessageSquare,
   TrendingUp,
-  Sparkles
+  Sparkles,
+  Languages
 } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+
+type Language = 'en' | 'ar';
+
+const translations = {
+  en: {
+    // Hero Section
+    heroTitle: "Master Amharic with AI",
+    heroSubtitle: "AI-Powered Language Learning Platform",
+    heroDescription: "Designed for English, Arabic & Chinese speakers",
+    startFreeTrial: "Start Free Trial",
+    signIn: "Sign In",
+    freeLessons: "First 5 lessons absolutely free",
+    
+    // Stats
+    activeLearners: "Active Learners",
+    userRating: "User Rating",
+    languages: "Languages",
+    
+    // Features Section
+    whyChoose: "Why Choose AmharicAI?",
+    whyChooseDesc: "Experience the most advanced Amharic learning platform powered by artificial intelligence",
+    
+    // Feature Cards
+    aiTutoringTitle: "AI-Powered Tutoring",
+    aiTutoringDesc: "Get personalized feedback and guidance from our advanced AI tutor, available 24/7 to help you learn.",
+    
+    pronunciationTitle: "Pronunciation Practice",
+    pronunciationDesc: "Perfect your Amharic pronunciation with real-time voice recognition and instant feedback.",
+    
+    multilingualTitle: "Multilingual Support",
+    multilingualDesc: "Learn in your native language with full support for English, Arabic, and Chinese speakers.",
+    
+    lessonsTitle: "Structured Lessons",
+    lessonsDesc: "Follow a comprehensive curriculum from alphabet basics to advanced conversation skills.",
+    
+    progressTitle: "Track Your Progress",
+    progressDesc: "Monitor your learning journey with detailed analytics and achievement tracking.",
+    
+    conversationTitle: "Interactive Conversations",
+    conversationDesc: "Practice real conversations with our AI tutor and build confidence in speaking.",
+    
+    // How It Works
+    howItWorksTitle: "Start Learning in 3 Simple Steps",
+    howItWorksDesc: "Begin your Amharic learning journey today",
+    
+    step1Title: "Create Your Account",
+    step1Desc: "Sign up for free and get instant access to your first 5 lessons",
+    
+    step2Title: "Choose Your Language",
+    step2Desc: "Select your native language (English, Arabic, or Chinese) for personalized lessons",
+    
+    step3Title: "Start Learning",
+    step3Desc: "Begin your journey with interactive lessons and AI-powered guidance",
+    
+    // CTA Section
+    ctaTitle: "Ready to Master Amharic?",
+    ctaDesc: "Join thousands of learners who are already speaking Amharic confidently",
+    getStartedFree: "Get Started Free",
+    ctaNote: "No credit card required • 5 free lessons • Cancel anytime",
+    
+    // Footer
+    copyright: "© 2025 AmharicAI. All rights reserved.",
+  },
+  ar: {
+    // Hero Section
+    heroTitle: "تعلم الأمهرية مع الذكاء الاصطناعي",
+    heroSubtitle: "منصة تعليم اللغة بالذكاء الاصطناعي",
+    heroDescription: "مصممة للمتحدثين بالإنجليزية والعربية والصينية",
+    startFreeTrial: "ابدأ التجربة المجانية",
+    signIn: "تسجيل الدخول",
+    freeLessons: "أول 5 دروس مجانية تماماً",
+    
+    // Stats
+    activeLearners: "متعلم نشط",
+    userRating: "تقييم المستخدمين",
+    languages: "لغات",
+    
+    // Features Section
+    whyChoose: "لماذا تختار AmharicAI؟",
+    whyChooseDesc: "استمتع بأحدث منصة لتعليم اللغة الأمهرية مدعومة بالذكاء الاصطناعي",
+    
+    // Feature Cards
+    aiTutoringTitle: "تدريس بالذكاء الاصطناعي",
+    aiTutoringDesc: "احصل على ملاحظات وإرشادات شخصية من معلم الذكاء الاصطناعي المتقدم، المتاح على مدار الساعة لمساعدتك في التعلم.",
+    
+    pronunciationTitle: "ممارسة النطق",
+    pronunciationDesc: "أتقن نطقك للأمهرية مع التعرف الصوتي الفوري والملاحظات الفورية.",
+    
+    multilingualTitle: "دعم متعدد اللغات",
+    multilingualDesc: "تعلم بلغتك الأم مع الدعم الكامل للمتحدثين بالإنجليزية والعربية والصينية.",
+    
+    lessonsTitle: "دروس منظمة",
+    lessonsDesc: "اتبع منهجاً شاملاً من أساسيات الأبجدية إلى مهارات المحادثة المتقدمة.",
+    
+    progressTitle: "تتبع تقدمك",
+    progressDesc: "راقب رحلة تعلمك بتحليلات مفصلة وتتبع الإنجازات.",
+    
+    conversationTitle: "محادثات تفاعلية",
+    conversationDesc: "تدرب على المحادثات الحقيقية مع معلم الذكاء الاصطناعي لدينا وابنِ الثقة في التحدث.",
+    
+    // How It Works
+    howItWorksTitle: "ابدأ التعلم في 3 خطوات بسيطة",
+    howItWorksDesc: "ابدأ رحلة تعلم اللغة الأمهرية اليوم",
+    
+    step1Title: "إنشاء حسابك",
+    step1Desc: "سجل مجاناً واحصل على وصول فوري لأول 5 دروس",
+    
+    step2Title: "اختر لغتك",
+    step2Desc: "اختر لغتك الأم (الإنجليزية أو العربية أو الصينية) للحصول على دروس مخصصة",
+    
+    step3Title: "ابدأ التعلم",
+    step3Desc: "ابدأ رحلتك مع دروس تفاعلية وإرشادات مدعومة بالذكاء الاصطناعي",
+    
+    // CTA Section
+    ctaTitle: "هل أنت مستعد لإتقان الأمهرية؟",
+    ctaDesc: "انضم إلى آلاف المتعلمين الذين يتحدثون الأمهرية بثقة بالفعل",
+    getStartedFree: "ابدأ مجاناً",
+    ctaNote: "لا حاجة لبطاقة ائتمان • 5 دروس مجانية • إلغاء في أي وقت",
+    
+    // Footer
+    copyright: "© 2025 AmharicAI. جميع الحقوق محفوظة.",
+  }
+};
 
 export default function Landing() {
+  const [language, setLanguage] = useState<Language>('en');
+  const t = translations[language];
+
+  useEffect(() => {
+    // Load language preference from localStorage
+    const savedLanguage = localStorage.getItem('landing-language') as Language;
+    if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'ar')) {
+      setLanguage(savedLanguage);
+    }
+  }, []);
+
   useEffect(() => {
     // Set document title and meta description for SEO
     document.title = "Learn Amharic - AI-Powered Language Learning | AmharicAI";
@@ -30,20 +165,55 @@ export default function Landing() {
       document.head.appendChild(meta);
     }
 
-    // Set language attribute
-    document.documentElement.lang = 'en';
+    // Set language attribute and direction
+    document.documentElement.lang = language;
+    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
     
     return () => {
       document.title = 'AmharicAI - Learn Amharic Language';
+      document.documentElement.dir = 'ltr';
     };
-  }, []);
+  }, [language]);
+
+  const handleLanguageChange = (lang: Language) => {
+    setLanguage(lang);
+    localStorage.setItem('landing-language', lang);
+  };
 
   const handleGetStarted = () => {
     window.location.href = "/api/login";
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950">
+    <div className="min-h-screen bg-white dark:bg-gray-950" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+      {/* Language Switcher - Fixed Top Right */}
+      <div className="fixed top-4 right-4 z-50">
+        <div className="flex gap-2 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm rounded-full p-1 shadow-lg border border-gray-200 dark:border-gray-700">
+          <button
+            onClick={() => handleLanguageChange('en')}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+              language === 'en' 
+                ? 'bg-primary text-white shadow-md' 
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
+            }`}
+            data-testid="button-language-en"
+          >
+            English
+          </button>
+          <button
+            onClick={() => handleLanguageChange('ar')}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+              language === 'ar' 
+                ? 'bg-primary text-white shadow-md' 
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
+            }`}
+            data-testid="button-language-ar"
+          >
+            العربية
+          </button>
+        </div>
+      </div>
+
       {/* Hero Section */}
       <section className="relative gradient-hero overflow-hidden min-h-[600px] sm:min-h-[700px]">
         {/* Background Pattern */}
@@ -68,15 +238,15 @@ export default function Landing() {
 
             {/* Headline */}
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-lg" data-testid="title-main">
-              Master Amharic with AI
+              {t.heroTitle}
             </h1>
             
             <p className="text-lg sm:text-xl md:text-2xl text-white mb-4 max-w-3xl mx-auto drop-shadow-md font-medium">
-              AI-Powered Language Learning Platform
+              {t.heroSubtitle}
             </p>
             
             <p className="text-base sm:text-lg text-white/90 mb-10 max-w-2xl mx-auto drop-shadow-md">
-              Designed for English, Arabic & Chinese speakers
+              {t.heroDescription}
             </p>
 
             {/* CTA Buttons */}
@@ -87,8 +257,8 @@ export default function Landing() {
                 className="w-full sm:w-auto bg-white text-primary hover:bg-gray-100 font-semibold px-8 py-6 rounded-xl shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105 text-lg group"
                 data-testid="button-get-started"
               >
-                <span>Start Free Trial</span>
-                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                <span>{t.startFreeTrial}</span>
+                <ArrowRight className={`${language === 'ar' ? 'mr-2 rotate-180' : 'ml-2'} h-5 w-5 group-hover:translate-x-1 transition-transform`} />
               </Button>
               
               <Button
@@ -98,14 +268,14 @@ export default function Landing() {
                 className="w-full sm:w-auto bg-white/20 backdrop-blur-md text-white border-2 border-white/40 hover:bg-white/30 font-medium px-8 py-6 rounded-xl transition-all duration-300 text-lg shadow-lg"
                 data-testid="button-sign-in"
               >
-                Sign In
+                {t.signIn}
               </Button>
             </div>
 
             {/* Free Trial Badge */}
             <div className="inline-flex items-center gap-2 bg-white/25 backdrop-blur-md px-6 py-3 rounded-full text-white border border-white/40 shadow-lg">
               <CheckCircle className="h-5 w-5 text-green-200" />
-              <span className="font-semibold">First 5 lessons absolutely free</span>
+              <span className="font-semibold">{t.freeLessons}</span>
             </div>
 
             {/* Stats */}
@@ -113,17 +283,17 @@ export default function Landing() {
               <div className="text-center" data-testid="stat-learners">
                 <Users className="h-8 w-8 mb-3 mx-auto text-white drop-shadow-md" />
                 <p className="text-2xl sm:text-3xl font-bold text-white drop-shadow-md">10,000+</p>
-                <p className="text-sm text-white/90 mt-1 font-medium">Active Learners</p>
+                <p className="text-sm text-white/90 mt-1 font-medium">{t.activeLearners}</p>
               </div>
               <div className="text-center" data-testid="stat-rating">
                 <Star className="h-8 w-8 mb-3 mx-auto text-yellow-300 fill-yellow-300 drop-shadow-md" />
                 <p className="text-2xl sm:text-3xl font-bold text-white drop-shadow-md">4.9/5</p>
-                <p className="text-sm text-white/90 mt-1 font-medium">User Rating</p>
+                <p className="text-sm text-white/90 mt-1 font-medium">{t.userRating}</p>
               </div>
               <div className="text-center" data-testid="stat-languages">
                 <Globe className="h-8 w-8 mb-3 mx-auto text-white drop-shadow-md" />
                 <p className="text-2xl sm:text-3xl font-bold text-white drop-shadow-md">3</p>
-                <p className="text-sm text-white/90 mt-1 font-medium">Languages</p>
+                <p className="text-sm text-white/90 mt-1 font-medium">{t.languages}</p>
               </div>
             </div>
           </div>
@@ -142,10 +312,10 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-              Why Choose AmharicAI?
+              {t.whyChoose}
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Experience the most advanced Amharic learning platform powered by artificial intelligence
+              {t.whyChooseDesc}
             </p>
           </div>
 
@@ -156,10 +326,10 @@ export default function Landing() {
                 <Brain className="h-7 w-7 text-white" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
-                AI-Powered Tutoring
+                {t.aiTutoringTitle}
               </h3>
               <p className="text-gray-600 dark:text-gray-400">
-                Get personalized feedback and guidance from our advanced AI tutor, available 24/7 to help you learn.
+                {t.aiTutoringDesc}
               </p>
             </div>
 
@@ -169,10 +339,10 @@ export default function Landing() {
                 <Mic className="h-7 w-7 text-white" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
-                Pronunciation Practice
+                {t.pronunciationTitle}
               </h3>
               <p className="text-gray-600 dark:text-gray-400">
-                Perfect your Amharic pronunciation with real-time voice recognition and instant feedback.
+                {t.pronunciationDesc}
               </p>
             </div>
 
@@ -182,10 +352,10 @@ export default function Landing() {
                 <Globe className="h-7 w-7 text-white" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
-                Multilingual Support
+                {t.multilingualTitle}
               </h3>
               <p className="text-gray-600 dark:text-gray-400">
-                Learn in your native language with full support for English, Arabic, and Chinese speakers.
+                {t.multilingualDesc}
               </p>
             </div>
 
@@ -195,10 +365,10 @@ export default function Landing() {
                 <BookOpen className="h-7 w-7 text-white" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
-                Structured Lessons
+                {t.lessonsTitle}
               </h3>
               <p className="text-gray-600 dark:text-gray-400">
-                Follow a comprehensive curriculum from alphabet basics to advanced conversation skills.
+                {t.lessonsDesc}
               </p>
             </div>
 
@@ -208,10 +378,10 @@ export default function Landing() {
                 <TrendingUp className="h-7 w-7 text-white" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
-                Track Your Progress
+                {t.progressTitle}
               </h3>
               <p className="text-gray-600 dark:text-gray-400">
-                Monitor your learning journey with detailed analytics and achievement tracking.
+                {t.progressDesc}
               </p>
             </div>
 
@@ -221,10 +391,10 @@ export default function Landing() {
                 <MessageSquare className="h-7 w-7 text-white" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
-                Interactive Conversations
+                {t.conversationTitle}
               </h3>
               <p className="text-gray-600 dark:text-gray-400">
-                Practice real conversations with our AI tutor and build confidence in speaking.
+                {t.conversationDesc}
               </p>
             </div>
           </div>
@@ -236,10 +406,10 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-              Start Learning in 3 Simple Steps
+              {t.howItWorksTitle}
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Begin your Amharic learning journey today
+              {t.howItWorksDesc}
             </p>
           </div>
 
@@ -249,10 +419,10 @@ export default function Landing() {
                 1
               </div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
-                Create Your Account
+                {t.step1Title}
               </h3>
               <p className="text-gray-600 dark:text-gray-400">
-                Sign up for free and get instant access to your first 5 lessons
+                {t.step1Desc}
               </p>
             </div>
 
@@ -261,10 +431,10 @@ export default function Landing() {
                 2
               </div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
-                Choose Your Language
+                {t.step2Title}
               </h3>
               <p className="text-gray-600 dark:text-gray-400">
-                Select your native language (English, Arabic, or Chinese) for personalized lessons
+                {t.step2Desc}
               </p>
             </div>
 
@@ -273,10 +443,10 @@ export default function Landing() {
                 3
               </div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
-                Start Learning
+                {t.step3Title}
               </h3>
               <p className="text-gray-600 dark:text-gray-400">
-                Begin your journey with interactive lessons and AI-powered guidance
+                {t.step3Desc}
               </p>
             </div>
           </div>
@@ -289,10 +459,10 @@ export default function Landing() {
         
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
-            Ready to Master Amharic?
+            {t.ctaTitle}
           </h2>
           <p className="text-lg sm:text-xl text-white/90 mb-10 max-w-2xl mx-auto">
-            Join thousands of learners who are already speaking Amharic confidently
+            {t.ctaDesc}
           </p>
           
           <Button
@@ -301,12 +471,12 @@ export default function Landing() {
             className="bg-white text-primary hover:bg-gray-100 font-semibold px-10 py-6 rounded-xl shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-105 text-lg group"
             data-testid="button-cta-bottom"
           >
-            <span>Get Started Free</span>
-            <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            <span>{t.getStartedFree}</span>
+            <ArrowRight className={`${language === 'ar' ? 'mr-2 rotate-180' : 'ml-2'} h-5 w-5 group-hover:translate-x-1 transition-transform`} />
           </Button>
           
           <p className="text-white/75 mt-6">
-            No credit card required • 5 free lessons • Cancel anytime
+            {t.ctaNote}
           </p>
         </div>
       </section>
@@ -315,7 +485,7 @@ export default function Landing() {
       <footer className="py-8 bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-gray-600 dark:text-gray-400">
-            © 2025 AmharicAI. All rights reserved.
+            {t.copyright}
           </p>
         </div>
       </footer>
