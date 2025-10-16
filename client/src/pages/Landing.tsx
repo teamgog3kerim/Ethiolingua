@@ -18,7 +18,7 @@ import TelegramChatButton from "@/components/TelegramChatButton";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-type Language = 'en' | 'ar';
+type Language = 'en' | 'ar' | 'am';
 
 const translations = {
   en: {
@@ -138,6 +138,65 @@ const translations = {
     
     // Footer
     copyright: "© 2025 AmharicAI. جميع الحقوق محفوظة.",
+  },
+  am: {
+    // Hero Section
+    heroTitle: "አማርኛን በ AI ያስተምሩ",
+    heroSubtitle: "በ AI የሚሰራ የቋንቋ ትምህርት መድረክ",
+    heroDescription: "ለእንግሊዝኛ፣ ዓረብኛ እና ቻይንኛ ተናጋሪዎች የተዘጋጀ",
+    startFreeTrial: "ነጻ ሙከራ ይጀምሩ",
+    signIn: "ይግቡ",
+    freeLessons: "የመጀመሪያዎቹ 5 ትምህርቶች በሙሉ ነጻ",
+    
+    // Stats
+    activeLearners: "ንቁ ተማሪዎች",
+    userRating: "የተጠቃሚ ደረጃ",
+    languages: "ቋንቋዎች",
+    
+    // Features Section
+    whyChoose: "ለምን AmharicAI ይምረጡ?",
+    whyChooseDesc: "በሰው ሰራሽ ብልህነት የተደገፈውን ትምህርት የላቀ የአማርኛ መድረክን ይለማመዱ",
+    
+    // Feature Cards
+    aiTutoringTitle: "በ AI የሚደገፍ ማስተማር",
+    aiTutoringDesc: "ከላቀ AI አስተማሪ ግላዊ አስተያየት እና መመሪያ ያግኙ፣ እርስዎ እንዲማሩ ለማገዝ 24/7 ይገኛል።",
+    
+    pronunciationTitle: "የአጠባበቅ ልምምድ",
+    pronunciationDesc: "በእውነተኛ ጊዜ የድምጽ ማወቂያ እና ፈጣን አስተያየት አማርኛ አጠባበቅዎን ያሻሽሉ።",
+    
+    multilingualTitle: "ባለብዙ ቋንቋ ድጋፍ",
+    multilingualDesc: "በእናት ቋንቋዎ ይማሩ ለእንግሊዝኛ፣ ዓረብኛ እና ቻይንኛ ተናጋሪዎች ሙሉ ድጋፍ።",
+    
+    lessonsTitle: "የተደራጁ ትምህርቶች",
+    lessonsDesc: "ከፊደል መሠረታዊ ጀምሮ እስከ ላቀ የውይይት ክህሎት አጠቃላይ ትምህርትን ይከተሉ።",
+    
+    progressTitle: "እድገትዎን ይከታተሉ",
+    progressDesc: "በዝርዝር ትንታኔ እና የእድገት ክትትል የመማር ጉዞዎን ይቆጣጠሩ።",
+    
+    conversationTitle: "መስተጋብራዊ ውይይቶች",
+    conversationDesc: "ከእኛ AI አስተማሪ ጋር እውነተኛ ውይይቶችን ይለማመዱ እና በንግግር ውስጥ በራስ መተማመንን ይገንቡ።",
+    
+    // How It Works
+    howItWorksTitle: "በ3 ቀላል ደረጃዎች ማውጣት ይጀምሩ",
+    howItWorksDesc: "የአማርኛ ትምህርት ጉዞዎን ዛሬ ይጀምሩ",
+    
+    step1Title: "መለያዎን ይፍጠሩ",
+    step1Desc: "በነጻ ይመዝገቡ እና ወደ የመጀመሪያዎቹ 5 ትምህርቶች ፈጣን መድረሻ ያግኙ",
+    
+    step2Title: "ቋንቋዎን ይምረጡ",
+    step2Desc: "ለግላዊ ትምህርቶች የእናት ቋንቋዎን (እንግሊዝኛ፣ ዓረብኛ ወይም ቻይንኛ) ይምረጡ",
+    
+    step3Title: "መማር ይጀምሩ",
+    step3Desc: "ጉዞዎን በመስተጋብር ትምህርቶች እና በ AI የሚመራ መመሪያ ይጀምሩ",
+    
+    // CTA Section
+    ctaTitle: "አማርኛን ለማስተማር ዝግጁ ነዎት?",
+    ctaDesc: "አስቀድሞ አማርኛ በበራሰ መተማመን እየተናገሩ ካሉ ከሺዎች ተማሪዎች ጋር ይቀላቀሉ",
+    getStartedFree: "በነጻ ይጀምሩ",
+    ctaNote: "የክሬዲት ካርድ አያስፈልግም • 5 ነጻ ትምህርቶች • በማንኛውም ጊዜ ይሰርዙ",
+    
+    // Footer
+    copyright: "© 2025 AmharicAI. ሁሉም መብቶች የተጠበቁ ናቸው።",
   }
 };
 
@@ -147,7 +206,8 @@ export default function Landing() {
   // Map context language to landing page language
   const language: Language = useMemo(() => {
     if (currentLanguage === 'arabic') return 'ar';
-    return 'en'; // Default to English for 'english' and 'amharic'
+    if (currentLanguage === 'amharic') return 'am';
+    return 'en'; // Default to English
   }, [currentLanguage]);
   
   const t = translations[language];
