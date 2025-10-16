@@ -7,10 +7,12 @@ import { useAuth } from "@/hooks/useAuth";
 import { LessonCard } from "@/components/LessonCard";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Home() {
   const { user, isLoading } = useAuth();
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const { data: lessons, isLoading: lessonsLoading, error } = useQuery({
     queryKey: ["/api/lessons"],
@@ -59,11 +61,11 @@ export default function Home() {
               </div>
               <div className="min-w-0 flex-1 overflow-hidden">
                 <h1 className="text-sm sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent truncate" data-testid="text-app-name">
-                  Learn Amharic
+                  {t('home.learningAmharic')}
                 </h1>
                 <p className="hidden md:flex text-xs lg:text-sm text-muted-foreground items-center gap-1 truncate" data-testid="text-user-language">
                   <i className="fas fa-globe text-primary text-xs flex-shrink-0"></i>
-                  <span className="truncate">{user?.nativeLanguage === 'arabic' ? 'Arabic Speaker' : 'English Speaker'}</span>
+                  <span className="truncate">{user?.nativeLanguage === 'arabic' ? t('home.arabicSpeaker') : t('home.englishSpeaker')}</span>
                 </p>
               </div>
             </div>
@@ -92,7 +94,7 @@ export default function Home() {
         <div className="mb-6 sm:mb-8 lg:mb-12">
           <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
             <div className="w-1 h-6 sm:h-8 bg-gradient-to-b from-primary to-secondary rounded-full flex-shrink-0"></div>
-            <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">Your Progress</h2>
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">{t('home.yourProgress')}</h2>
             <div className="flex-1 h-px bg-gradient-to-r from-primary/20 to-transparent"></div>
           </div>
           
@@ -107,7 +109,7 @@ export default function Home() {
                   <p className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent" data-testid="text-completed-lessons">
                     {(stats as any)?.completedLessons || 0}
                   </p>
-                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Lessons</p>
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">{t('home.lessons')}</p>
                 </div>
               </div>
               <div className="flex-1 h-2 sm:h-3 bg-muted rounded-full overflow-hidden mb-2 sm:mb-3 shadow-inner">
@@ -118,7 +120,7 @@ export default function Home() {
               </div>
               <p className="text-xs font-medium text-muted-foreground flex items-center gap-1">
                 <i className="fas fa-target text-primary text-xs flex-shrink-0"></i>
-                <span className="truncate">{(stats as any)?.completedLessons || 0}/20 Beginner Level</span>
+                <span className="truncate">{(stats as any)?.completedLessons || 0}/20 {t('home.beginnerLevel')}</span>
               </p>
             </Card>
             
@@ -132,12 +134,12 @@ export default function Home() {
                   <p className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-accent to-orange-500 bg-clip-text text-transparent" data-testid="text-study-time">
                     {(((stats as any)?.totalTimeMinutes || 0) / 60).toFixed(1)}
                   </p>
-                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">Hours</p>
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">{t('home.hours')}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-accent rounded-full animate-pulse flex-shrink-0"></div>
-                <p className="text-xs font-medium text-muted-foreground">This week</p>
+                <p className="text-xs font-medium text-muted-foreground">{t('home.thisWeek')}</p>
               </div>
             </Card>
             
@@ -151,12 +153,12 @@ export default function Home() {
                   <p className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-secondary to-purple-500 bg-clip-text text-transparent" data-testid="text-accuracy">
                     {Math.round((stats as any)?.averageScore || 0)}
                   </p>
-                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">% Accuracy</p>
+                  <p className="text-xs sm:text-sm font-medium text-muted-foreground">{t('home.accuracy')}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-secondary rounded-full animate-bounce flex-shrink-0"></div>
-                <p className="text-xs font-medium text-muted-foreground">Overall performance</p>
+                <p className="text-xs font-medium text-muted-foreground">{t('home.overallPerformance')}</p>
               </div>
             </Card>
           </div>
@@ -165,11 +167,11 @@ export default function Home() {
         {/* Current Level */}
         <div className="mb-6 sm:mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
-            <h2 className="text-lg sm:text-xl font-bold text-foreground">Beginner Level</h2>
+            <h2 className="text-lg sm:text-xl font-bold text-foreground">{t('home.beginnerLevel')}</h2>
             <Link href="/subscription">
               <Button variant="ghost" className="text-primary font-medium text-sm hover:underline self-start sm:self-auto">
                 <i className="fas fa-crown text-secondary mr-1 flex-shrink-0"></i>
-                <span>Upgrade to Pro</span>
+                <span>{t('home.upgradeToPro')}</span>
               </Button>
             </Link>
           </div>
@@ -189,7 +191,7 @@ export default function Home() {
         <div className="mb-6 sm:mb-8 lg:mb-12">
           <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
             <div className="w-1 h-6 sm:h-8 bg-gradient-to-b from-accent to-secondary rounded-full flex-shrink-0"></div>
-            <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">Quick Practice</h2>
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground">{t('home.quickPractice')}</h2>
             <div className="flex-1 h-px bg-gradient-to-r from-accent/20 to-transparent"></div>
           </div>
           <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
@@ -198,8 +200,8 @@ export default function Home() {
                 <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-primary to-primary/80 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300">
                   <i className="fas fa-question text-white text-lg sm:text-xl"></i>
                 </div>
-                <h3 className="font-bold text-foreground text-sm sm:text-base mb-1 sm:mb-2">Quiz Challenge</h3>
-                <p className="text-xs sm:text-sm text-muted-foreground">Test your knowledge</p>
+                <h3 className="font-bold text-foreground text-sm sm:text-base mb-1 sm:mb-2">{t('home.quizChallenge')}</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground">{t('home.testYourKnowledge')}</p>
               </Card>
             </Link>
             
@@ -208,8 +210,8 @@ export default function Home() {
                 <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-accent to-orange-500 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300">
                   <i className="fas fa-robot text-white text-lg sm:text-xl"></i>
                 </div>
-                <h3 className="font-bold text-foreground text-sm sm:text-base mb-1 sm:mb-2">AI Tutor</h3>
-                <p className="text-xs sm:text-sm text-muted-foreground">Practice conversations</p>
+                <h3 className="font-bold text-foreground text-sm sm:text-base mb-1 sm:mb-2">{t('home.aiTutor')}</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground">{t('home.practiceConversations')}</p>
               </Card>
             </Link>
             
@@ -218,8 +220,8 @@ export default function Home() {
                 <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-secondary to-purple-500 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300">
                   <i className="fas fa-video text-white text-lg sm:text-xl"></i>
                 </div>
-                <h3 className="font-bold text-foreground text-sm sm:text-base mb-1 sm:mb-2">Live Tutors</h3>
-                <p className="text-xs sm:text-sm text-muted-foreground">Practice with natives</p>
+                <h3 className="font-bold text-foreground text-sm sm:text-base mb-1 sm:mb-2">{t('home.liveTutors')}</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground">{t('home.practiceWithNatives')}</p>
               </Card>
             </Link>
           </div>
