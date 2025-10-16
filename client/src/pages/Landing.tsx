@@ -492,7 +492,7 @@ export default function Landing() {
       </footer>
 
       {/* Telegram Chat Button */}
-      <TelegramChatButton />
+      <TelegramChatButton language={language} />
     </div>
   );
 }
