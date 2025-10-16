@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import Sidebar from "./Sidebar";
 import TelegramChatButton from "./TelegramChatButton";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -27,6 +28,11 @@ export default function AppLayout({ children }: AppLayoutProps) {
           <Menu className="w-5 h-5 text-primary-foreground" />
         </Button>
       )}
+
+      {/* Language Switcher - Fixed Top Right */}
+      <div className="fixed top-4 right-4 z-50">
+        <LanguageSwitcher />
+      </div>
 
       <Sidebar isOpen={sidebarOpen} onToggle={toggleSidebar} />
       
