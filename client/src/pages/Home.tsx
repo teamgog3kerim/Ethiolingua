@@ -50,7 +50,7 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="bg-gradient-to-r from-card via-primary/5 to-secondary/5 shadow-lg border-b border-primary/20 backdrop-blur-sm sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-4 pr-14 sm:pr-16">
           <div className="flex items-center justify-between gap-2 sm:gap-4">
             {/* Logo and Brand */}
             <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1 overflow-hidden">
