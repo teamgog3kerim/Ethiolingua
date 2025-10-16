@@ -1,4 +1,3 @@
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Mic, Users, Star, Globe } from "lucide-react";
 import { useEffect } from "react";
