@@ -13,8 +13,10 @@ import {
   Sparkles,
   Languages
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo } from "react";
 import TelegramChatButton from "@/components/TelegramChatButton";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type Language = 'en' | 'ar';
 
@@ -140,16 +142,15 @@ const translations = {
 };
 
 export default function Landing() {
-  const [language, setLanguage] = useState<Language>('en');
+  const { currentLanguage } = useLanguage();
+  
+  // Map context language to landing page language
+  const language: Language = useMemo(() => {
+    if (currentLanguage === 'arabic') return 'ar';
+    return 'en'; // Default to English for 'english' and 'amharic'
+  }, [currentLanguage]);
+  
   const t = translations[language];
-
-  useEffect(() => {
-    // Load language preference from localStorage
-    const savedLanguage = localStorage.getItem('landing-language') as Language;
-    if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'ar')) {
-      setLanguage(savedLanguage);
-    }
-  }, []);
 
   useEffect(() => {
     // Set document title and meta description for SEO
@@ -165,21 +166,7 @@ export default function Landing() {
       meta.content = 'Learn Amharic with AI-powered lessons designed for English, Arabic, and Chinese speakers. Start your free trial with 5 lessons and join 10,000+ learners mastering Ethiopian language.';
       document.head.appendChild(meta);
     }
-
-    // Set language attribute and direction
-    document.documentElement.lang = language;
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-    
-    return () => {
-      document.title = 'AmharicAI - Learn Amharic Language';
-      document.documentElement.dir = 'ltr';
-    };
-  }, [language]);
-
-  const handleLanguageChange = (lang: Language) => {
-    setLanguage(lang);
-    localStorage.setItem('landing-language', lang);
-  };
+  }, []);
 
   const handleGetStarted = () => {
     window.location.href = "/api/login";
@@ -189,30 +176,7 @@ export default function Landing() {
     <div className="min-h-screen bg-white dark:bg-gray-950" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       {/* Language Switcher - Fixed Top Right */}
       <div className="fixed top-4 right-4 z-50">
-        <div className="flex gap-2 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm rounded-full p-1 shadow-lg border border-gray-200 dark:border-gray-700">
-          <button
-            onClick={() => handleLanguageChange('en')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-              language === 'en' 
-                ? 'bg-primary text-white shadow-md' 
-                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
-            }`}
-            data-testid="button-language-en"
-          >
-            English
-          </button>
-          <button
-            onClick={() => handleLanguageChange('ar')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-              language === 'ar' 
-                ? 'bg-primary text-white shadow-md' 
-                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
-            }`}
-            data-testid="button-language-ar"
-          >
-            العربية
-          </button>
-        </div>
+        <LanguageSwitcher />
       </div>
 
       {/* Hero Section */}
