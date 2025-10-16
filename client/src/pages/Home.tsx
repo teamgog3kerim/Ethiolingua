@@ -51,17 +51,17 @@ export default function Home() {
       {/* Header */}
       <header className="bg-gradient-to-r from-card via-primary/5 to-secondary/5 shadow-lg border-b border-primary/20 backdrop-blur-sm sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-2 sm:gap-4">
             {/* Logo and Brand */}
-            <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary via-secondary to-accent rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex-shrink-0">
-                <div className="amharic-text text-lg sm:text-xl text-white font-bold">አ</div>
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1 overflow-hidden">
+              <div className="w-9 h-9 sm:w-12 sm:h-12 bg-gradient-to-br from-primary via-secondary to-accent rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex-shrink-0">
+                <div className="amharic-text text-base sm:text-xl text-white font-bold">አ</div>
               </div>
-              <div className="min-w-0 flex-1">
-                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent truncate" data-testid="text-app-name">
+              <div className="min-w-0 flex-1 overflow-hidden">
+                <h1 className="text-base sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent truncate" data-testid="text-app-name">
                   Learn Amharic
                 </h1>
-                <p className="hidden xs:flex text-xs lg:text-sm text-muted-foreground items-center gap-1 truncate" data-testid="text-user-language">
+                <p className="hidden sm:flex text-xs lg:text-sm text-muted-foreground items-center gap-1 truncate" data-testid="text-user-language">
                   <i className="fas fa-globe text-primary text-xs flex-shrink-0"></i>
                   <span className="truncate">{user?.nativeLanguage === 'arabic' ? 'Arabic Speaker' : 'English Speaker'}</span>
                 </p>
@@ -69,11 +69,11 @@ export default function Home() {
             </div>
             
             {/* Right side actions */}
-            <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
               {/* Streak indicator */}
-              <div className="flex items-center gap-1.5 bg-gradient-to-r from-orange-100 to-red-100 dark:from-orange-900/30 dark:to-red-900/30 px-2 sm:px-3 py-1.5 sm:py-2 rounded-full border border-orange-200 dark:border-orange-700 shadow-sm hover:shadow-md transition-all duration-200">
+              <div className="flex items-center gap-1 sm:gap-1.5 bg-gradient-to-r from-orange-100 to-red-100 dark:from-orange-900/30 dark:to-red-900/30 px-1.5 sm:px-3 py-1 sm:py-1.5 rounded-full border border-orange-200 dark:border-orange-700 shadow-sm hover:shadow-md transition-all duration-200">
                 <i className="fas fa-fire text-orange-500 text-xs sm:text-sm animate-pulse flex-shrink-0"></i>
-                <span className="text-xs sm:text-sm font-bold text-orange-700 dark:text-orange-300" data-testid="text-streak">
+                <span className="text-xs sm:text-sm font-bold text-orange-700 dark:text-orange-300 min-w-[1ch]" data-testid="text-streak">
                   {(stats as any)?.currentStreak || 0}
                 </span>
               </div>
