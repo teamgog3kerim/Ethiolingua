@@ -45,34 +45,37 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950">
       {/* Hero Section */}
-      <section className="relative gradient-primary overflow-hidden">
+      <section className="relative gradient-primary overflow-hidden min-h-[600px] sm:min-h-[700px]">
         {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-20 pattern-bg" />
+        <div className="absolute inset-0 opacity-10 pattern-bg" />
         
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
+        {/* Dark overlay for better text contrast */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/20" />
+        
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
           <div className="text-center">
             {/* Logo */}
             <div className="inline-flex items-center justify-center mb-8" data-testid="logo-container">
               <div className="relative">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center shadow-2xl">
-                  <span className="amharic-text text-4xl sm:text-5xl text-white font-bold">አ</span>
+                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white/30 backdrop-blur-md rounded-3xl flex items-center justify-center shadow-2xl border border-white/20">
+                  <span className="amharic-text text-4xl sm:text-5xl text-white font-bold drop-shadow-lg">አ</span>
                 </div>
-                <div className="absolute -top-2 -right-2 w-10 h-10 bg-secondary rounded-full flex items-center justify-center shadow-lg">
+                <div className="absolute -top-2 -right-2 w-10 h-10 bg-secondary rounded-full flex items-center justify-center shadow-xl">
                   <Sparkles className="h-5 w-5 text-white" />
                 </div>
               </div>
             </div>
 
             {/* Headline */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight" data-testid="title-main">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-lg" data-testid="title-main">
               Master Amharic with AI
             </h1>
             
-            <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-4 max-w-3xl mx-auto">
+            <p className="text-lg sm:text-xl md:text-2xl text-white mb-4 max-w-3xl mx-auto drop-shadow-md font-medium">
               AI-Powered Language Learning Platform
             </p>
             
-            <p className="text-base sm:text-lg text-white/75 mb-10 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-white/90 mb-10 max-w-2xl mx-auto drop-shadow-md">
               Designed for English, Arabic & Chinese speakers
             </p>
 
@@ -92,7 +95,7 @@ export default function Landing() {
                 onClick={handleGetStarted}
                 size="lg"
                 variant="outline"
-                className="w-full sm:w-auto bg-white/10 backdrop-blur-sm text-white border-2 border-white/30 hover:bg-white/20 font-medium px-8 py-6 rounded-xl transition-all duration-300 text-lg"
+                className="w-full sm:w-auto bg-white/20 backdrop-blur-md text-white border-2 border-white/40 hover:bg-white/30 font-medium px-8 py-6 rounded-xl transition-all duration-300 text-lg shadow-lg"
                 data-testid="button-sign-in"
               >
                 Sign In
@@ -100,27 +103,27 @@ export default function Landing() {
             </div>
 
             {/* Free Trial Badge */}
-            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full text-white border border-white/30">
-              <CheckCircle className="h-5 w-5 text-green-300" />
-              <span className="font-medium">First 5 lessons absolutely free</span>
+            <div className="inline-flex items-center gap-2 bg-white/25 backdrop-blur-md px-6 py-3 rounded-full text-white border border-white/40 shadow-lg">
+              <CheckCircle className="h-5 w-5 text-green-200" />
+              <span className="font-semibold">First 5 lessons absolutely free</span>
             </div>
 
             {/* Stats */}
             <div className="mt-16 grid grid-cols-3 gap-8 max-w-3xl mx-auto">
               <div className="text-center" data-testid="stat-learners">
-                <Users className="h-8 w-8 mb-3 mx-auto text-white/80" />
-                <p className="text-2xl sm:text-3xl font-bold text-white">10,000+</p>
-                <p className="text-sm text-white/70 mt-1">Active Learners</p>
+                <Users className="h-8 w-8 mb-3 mx-auto text-white drop-shadow-md" />
+                <p className="text-2xl sm:text-3xl font-bold text-white drop-shadow-md">10,000+</p>
+                <p className="text-sm text-white/90 mt-1 font-medium">Active Learners</p>
               </div>
               <div className="text-center" data-testid="stat-rating">
-                <Star className="h-8 w-8 mb-3 mx-auto text-yellow-300 fill-yellow-300" />
-                <p className="text-2xl sm:text-3xl font-bold text-white">4.9/5</p>
-                <p className="text-sm text-white/70 mt-1">User Rating</p>
+                <Star className="h-8 w-8 mb-3 mx-auto text-yellow-300 fill-yellow-300 drop-shadow-md" />
+                <p className="text-2xl sm:text-3xl font-bold text-white drop-shadow-md">4.9/5</p>
+                <p className="text-sm text-white/90 mt-1 font-medium">User Rating</p>
               </div>
               <div className="text-center" data-testid="stat-languages">
-                <Globe className="h-8 w-8 mb-3 mx-auto text-white/80" />
-                <p className="text-2xl sm:text-3xl font-bold text-white">3</p>
-                <p className="text-sm text-white/70 mt-1">Languages</p>
+                <Globe className="h-8 w-8 mb-3 mx-auto text-white drop-shadow-md" />
+                <p className="text-2xl sm:text-3xl font-bold text-white drop-shadow-md">3</p>
+                <p className="text-sm text-white/90 mt-1 font-medium">Languages</p>
               </div>
             </div>
           </div>
