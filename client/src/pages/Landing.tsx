@@ -14,6 +14,7 @@ import {
   Languages
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import TelegramChatButton from "@/components/TelegramChatButton";
 
 type Language = 'en' | 'ar';
 
@@ -489,6 +490,9 @@ export default function Landing() {
           </p>
         </div>
       </footer>
+
+      {/* Telegram Chat Button */}
+      <TelegramChatButton />
     </div>
   );
 }

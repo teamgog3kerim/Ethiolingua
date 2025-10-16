@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import Sidebar from "./Sidebar";
+import TelegramChatButton from "./TelegramChatButton";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -33,6 +34,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
       <div className={`transition-all duration-300 ${sidebarOpen ? 'lg:ml-80' : ''}`}>
         {children}
       </div>
+
+      {/* Telegram Chat Button */}
+      <TelegramChatButton />
     </div>
   );
 }
