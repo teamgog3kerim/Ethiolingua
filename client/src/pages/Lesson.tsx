@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { AudioPlayer } from "@/components/AudioPlayer";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import type { Lesson } from "@shared/schema";
 
 export default function Lesson() {
   const { id } = useParams<{ id: string }>();
@@ -12,7 +13,7 @@ export default function Lesson() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: lesson, isLoading } = useQuery({
+  const { data: lesson, isLoading } = useQuery<Lesson & { completed?: boolean }>({
     queryKey: ["/api/lessons", lessonId],
   });
 
@@ -61,14 +62,13 @@ export default function Lesson() {
     );
   }
 
-  const amharicTerms = lesson.content?.amharic || ["አ"];
-  const chineseTerms = lesson.content?.chinese || ["A"];
-  const arabicTerms = lesson.content?.arabic || ["أ"];
-  const englishTerms = lesson.content?.english || ["A"];
+  const content = lesson.content as { amharic?: string[], arabic?: string[], english?: string[] } | undefined;
+  const amharicTerms = content?.amharic || ["አ"];
+  const arabicTerms = content?.arabic || ["أ"];
+  const englishTerms = content?.english || ["A"];
   
   const maxTerms = Math.max(
     amharicTerms.length,
-    chineseTerms.length,
     arabicTerms.length,
     englishTerms.length
   );
@@ -123,12 +123,6 @@ export default function Lesson() {
               </div>
               <div className="flex flex-col gap-4 max-w-sm mx-auto">
                 <Card className="bg-muted rounded-2xl p-4">
-                  <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider">Chinese</p>
-                  <p className="text-2xl font-bold text-foreground" data-testid={`text-chinese-character-${index}`}>
-                    {chineseTerms[index] || chineseTerms[0]}
-                  </p>
-                </Card>
-                <Card className="bg-muted rounded-2xl p-4">
                   <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider">Arabic</p>
                   <p className="text-2xl font-bold text-foreground" data-testid={`text-arabic-character-${index}`} dir="rtl">
                     {arabicTerms[index] || arabicTerms[0]}
@@ -146,8 +140,8 @@ export default function Lesson() {
             {/* Audio Controls - only show for first term */}
             {index === 0 && (
               <AudioPlayer
-                audioUrl={lesson.audioUrl}
-                slowAudioUrl={lesson.slowAudioUrl}
+                audioUrl={lesson.audioUrl ?? undefined}
+                slowAudioUrl={lesson.slowAudioUrl ?? undefined}
                 label={amharicTerms[0]}
               />
             )}

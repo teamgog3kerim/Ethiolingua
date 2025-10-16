@@ -56,22 +56,10 @@ export default function LanguageSettings() {
       description: "Use English for menus, buttons, and interface elements",
     },
     {
-      value: "chinese",
-      label: "Chinese",
-      nativeLabel: "中文",
-      description: "使用中文进行菜单、按钮和界面元素",
-    },
-    {
       value: "arabic",
       label: "Arabic",
       nativeLabel: "العربية",
       description: "استخدم العربية لعناصر الواجهة والقوائم والأزرار",
-    },
-    {
-      value: "amharic",
-      label: "Amharic",
-      nativeLabel: "አማርኛ",
-      description: "ለቅጽበት፣ ቁልፎች እና የማስተጋቢ ነገሮች አማርኛን ይጠቀሙ",
     },
   ];
 
@@ -81,12 +69,6 @@ export default function LanguageSettings() {
       label: "English",
       nativeLabel: "English",
       description: "I'm a native English speaker learning Amharic",
-    },
-    {
-      value: "chinese",
-      label: "Chinese",
-      nativeLabel: "中文",
-      description: "我是中文母语者，正在学习阿姆哈拉语",
     },
     {
       value: "arabic",
@@ -217,10 +199,10 @@ export default function LanguageSettings() {
           <Card className="p-6 bg-muted/50">
             <h4 className="font-semibold mb-3">{t('languageSettings.learningOptimization')}</h4>
             <div className="text-sm text-muted-foreground space-y-2">
-              <p>• Lessons will be optimized for {selectedNative === "arabic" ? "Arabic" : selectedNative === "chinese" ? "Chinese" : "English"} speakers</p>
+              <p>• Lessons will be optimized for {selectedNative === "arabic" ? "Arabic" : "English"} speakers</p>
               <p>• Translation hints will appear in your native language</p>
               <p>• Cultural context will be provided from your perspective</p>
-              <p>• Grammar explanations will reference {selectedNative === "arabic" ? "Arabic" : selectedNative === "chinese" ? "Chinese" : "English"} patterns</p>
+              <p>• Grammar explanations will reference {selectedNative === "arabic" ? "Arabic" : "English"} patterns</p>
             </div>
           </Card>
 

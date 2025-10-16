@@ -15,7 +15,6 @@ interface LessonCardProps {
 export function LessonCard({ lesson }: LessonCardProps) {
   const content = lesson.content as any;
   const amharicChar = content?.amharic?.[0] || "አ";
-  const chineseChar = content?.chinese?.[0] || "A";
   const arabicChar = content?.arabic?.[0] || "أ";
   const englishChar = content?.english?.[0] || "A";
   
@@ -64,16 +63,6 @@ export function LessonCard({ lesson }: LessonCardProps) {
             <div className="text-center py-2">
               <div className="char-display-amharic text-primary mb-1">{amharicChar}</div>
               <p className="text-xs text-muted-foreground uppercase tracking-wider">Amharic</p>
-            </div>
-            <div className="flex items-center justify-center gap-2">
-              <div className="w-6 h-px bg-gradient-to-r from-primary to-secondary" />
-              <span className="text-xs text-muted-foreground">means</span>
-              <div className="w-6 h-px bg-gradient-to-r from-secondary to-accent" />
-            </div>
-            {/* Chinese */}
-            <div className="text-center py-2">
-              <div className="char-display-standard text-foreground mb-1">{chineseChar}</div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider">Chinese</p>
             </div>
             <div className="flex items-center justify-center gap-2">
               <div className="w-6 h-px bg-gradient-to-r from-primary to-secondary" />
@@ -166,22 +155,7 @@ export function LessonCard({ lesson }: LessonCardProps) {
               <div className="w-8 h-px bg-gradient-to-r from-secondary to-accent" />
             </div>
             
-            {/* Chinese - Second */}
-            <div className="language-section-vertical">
-              <div className="char-display-standard text-foreground mb-2 group-hover:scale-105 transition-transform duration-300 formal-text">
-                {chineseChar}
-              </div>
-              <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Chinese</p>
-            </div>
-            
-            {/* Separator */}
-            <div className="language-separator-vertical">
-              <div className="w-8 h-px bg-gradient-to-r from-primary to-secondary" />
-              <div className="text-sm text-muted-foreground font-medium px-2">means</div>
-              <div className="w-8 h-px bg-gradient-to-r from-secondary to-accent" />
-            </div>
-            
-            {/* Arabic - Third (RTL support) */}
+            {/* Arabic (RTL support) */}
             <div className="language-section-vertical">
               <div className="char-display-standard text-foreground mb-2 group-hover:scale-105 transition-transform duration-300 formal-text" dir="rtl">
                 {arabicChar}
